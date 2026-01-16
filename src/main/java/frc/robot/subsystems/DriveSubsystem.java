@@ -25,25 +25,25 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kFrontLeftDrivingCanId,
       DriveConstants.kFrontLeftTurningCanId,
       DriveConstants.kFrontLeftChassisAngularOffset,
-      DriveConstants.kFrontLeftAbsoluteEncoder);
+      DriveConstants.kFrontLeftAbsoluteEncoderCanId);
 
   private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
       DriveConstants.kFrontRightDrivingCanId,
       DriveConstants.kFrontRightTurningCanId,
       DriveConstants.kFrontRightChassisAngularOffset,
-      DriveConstants.kFrontRightAbsoluteEncoder);
+      DriveConstants.kFrontRightAbsoluteEncoderCanId);
 
   private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
       DriveConstants.kRearLeftDrivingCanId,
       DriveConstants.kRearLeftTurningCanId,
-      DriveConstants.kBackLeftChassisAngularOffset,
-      DriveConstants.kBackLeftAbsoluteEncoder);
+      DriveConstants.kRearLeftChassisAngularOffset,
+      DriveConstants.kRearLeftAbsoluteEncoderCanId);
 
   private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
       DriveConstants.kRearRightDrivingCanId,
       DriveConstants.kRearRightTurningCanId,
-      DriveConstants.kBackRightChassisAngularOffset,
-      DriveConstants.kBackRightAbsoluteEncoder);
+      DriveConstants.kRearRightChassisAngularOffset,
+      DriveConstants.kRearRightAbsoluteEncoderCanId);
 
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
