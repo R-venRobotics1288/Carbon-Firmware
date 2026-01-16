@@ -32,7 +32,7 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(26.5);
     // Distance between centers of right and left wheels on robot
     public static final double kWheelBase = Units.inchesToMeters(26.5);
-    // Distance between front and back wheels on robot
+    // Distance between front and rear wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(kWheelBase / 2, kTrackWidth / 2),
       new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
@@ -42,27 +42,25 @@ public final class Constants {
       // Angular offsets of the modules relative to the chassis in radians
       public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
       public static final double kFrontRightChassisAngularOffset = 0;
-      public static final double kBackLeftChassisAngularOffset = Math.PI;
-      public static final double kBackRightChassisAngularOffset = Math.PI / 2;
-      
-      //TODO: REPLACE CAN IDS!!!!
+      public static final double kRearRightChassisAngularOffset = Math.PI / 2;
+      public static final double kRearLeftChassisAngularOffset = Math.PI;
 
       // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 11;
-    public static final int kRearLeftDrivingCanId = 13;
-    public static final int kFrontRightDrivingCanId = 15;
-    public static final int kRearRightDrivingCanId = 17;
+    public static final int kFrontLeftDrivingCanId = 1;
+    public static final int kRearLeftDrivingCanId = 7;
+    public static final int kFrontRightDrivingCanId = 4;
+    public static final int kRearRightDrivingCanId = 10; 
 
-    public static final int kFrontLeftTurningCanId = 10;
-    public static final int kRearLeftTurningCanId = 12;
-    public static final int kFrontRightTurningCanId = 14;
-    public static final int kRearRightTurningCanId = 16;
+    public static final int kFrontLeftTurningCanId = 3;
+    public static final int kRearLeftTurningCanId = 9;
+    public static final int kFrontRightTurningCanId = 6;
+    public static final int kRearRightTurningCanId = 12;
 
     //Encoder CAN ID values
-    public static final int kFrontLeftAbsoluteEncoder = 0;
-    public static final int kFrontRightAbsoluteEncoder = 0;
-    public static final int kBackLeftAbsoluteEncoder = 0;
-    public static final int kBackRightAbsoluteEncoder = 0;
+    public static final int kFrontLeftAbsoluteEncoderCanId = 2;
+    public static final int kRearLeftAbsoluteEncoderCanId = 8;
+    public static final int kFrontRightAbsoluteEncoderCanId = 5;
+    public static final int kRearRightAbsoluteEncoderCanId = 11;
 
     public static final boolean kGyroReversed = false;
   }
