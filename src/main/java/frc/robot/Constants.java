@@ -41,26 +41,26 @@ public final class Constants {
       new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
       
       // Angular offsets of the modules relative to the chassis in radians
-      public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
-      public static final double kFrontRightChassisAngularOffset = 0;
-      public static final double kRearRightChassisAngularOffset = Math.PI / 2;
+      public static final double kFrontLeftChassisAngularOffset = 0;
+      public static final double kFrontRightChassisAngularOffset = Math.PI;
+      public static final double kRearRightChassisAngularOffset = 0;
       public static final double kRearLeftChassisAngularOffset = Math.PI;
 
       // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 1;
-    public static final int kRearLeftDrivingCanId = 7;
     public static final int kFrontRightDrivingCanId = 4;
+    public static final int kRearLeftDrivingCanId = 7;
     public static final int kRearRightDrivingCanId = 10; 
 
     public static final int kFrontLeftTurningCanId = 3;
-    public static final int kRearLeftTurningCanId = 9;
     public static final int kFrontRightTurningCanId = 6;
+    public static final int kRearLeftTurningCanId = 9;
     public static final int kRearRightTurningCanId = 12;
 
     //Encoder CAN ID values
     public static final int kFrontLeftAbsoluteEncoderCanId = 2;
-    public static final int kRearLeftAbsoluteEncoderCanId = 8;
     public static final int kFrontRightAbsoluteEncoderCanId = 5;
+    public static final int kRearLeftAbsoluteEncoderCanId = 8;
     public static final int kRearRightAbsoluteEncoderCanId = 11;
 
     public static final boolean kGyroReversed = false;
@@ -81,11 +81,6 @@ public final class Constants {
     public static final double kDrivingMotorReduction = 8.14;
     public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
         / kDrivingMotorReduction;
-  }
-
-  public static final class OIConstants {
-    public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05;
   }
 
   public static final class AutoConstants {

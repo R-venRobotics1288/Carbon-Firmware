@@ -27,20 +27,29 @@ public final class Shuffle {
   public static boolean fieldRelative;
   // Driving Parameters - Note that these are not the maximum capable speeds of
   // the robot, rather the allowed maximum speeds
-  public static final double kMaxSpeedMetersPerSecond = 4.8;
-  public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
-  public static final int kDriverControllerPort = 0;
-  public static final double kDriveDeadband = 0.05;
+  public static final double kMaxSpeedMetersPerSecond = 0.06;
+  public static final double kMaxAngularSpeed = 0.03 * Math.PI; // radians per second
+  public static final double kDriveDeadband = 0.075;
+  public static double slewrate_translation = 0.5;
+  public static double slewrate_rotation = 0.5;
 
-  public static class shuffleManager {
-    public ShuffleboardTab shuffleTab = Shuffleboard.getTab("tooning");
-    /* private GenericEntry slew = shuffleTab.addPersistent("xy slew", BASE_SLEW_RATE)
-        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1, "max", 50)).getEntry(); */
-    private GenericEntry maxSpeed = shuffleTab.addPersistent("max speed", kMaxSpeedMetersPerSecond)
-        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1, "max", 75)).getEntry();
-    private GenericEntry maxRot = shuffleTab.addPersistent("max rot per s", kMaxAngularSpeed)
-        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1, "max", 30)).getEntry();
-    /*private GenericEntry rotSlew = shuffleTab.addPersistent("rotation slew", MAX_ROBOT_ROTATIONS_PER_SECOND)
-        .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1, "max", 30)).getEntry(); */
-  }
+  public ShuffleboardTab shuffleTab = Shuffleboard.getTab("tooning");
+  /*
+   * private GenericEntry slew = shuffleTab.addPersistent("xy slew",
+   * BASE_SLEW_RATE)
+   * .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1,
+   * "max", 50)).getEntry();
+   * private GenericEntry maxSpeed = shuffleTab.addPersistent("max speed",
+   * kMaxSpeedMetersPerSecond)
+   * .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1,
+   * "max", 75)).getEntry();
+   * private GenericEntry maxRot = shuffleTab.addPersistent("max rot per s",
+   * kMaxAngularSpeed)
+   * .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1,
+   * "max", 30)).getEntry();
+   * private GenericEntry rotSlew = shuffleTab.addPersistent("rotation slew",
+   * MAX_ROBOT_ROTATIONS_PER_SECOND)
+   * .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1,
+   * "max", 30)).getEntry();
+   */
 }

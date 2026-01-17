@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -22,16 +24,17 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import static frc.robot.Constants.DriveConstants.*;
 
 import frc.robot.Configs;
+import frc.robot.Shuffle;
 
 public class MAXSwerveModule {
   private final SparkMax m_drivingSpark;
   private final SparkMax m_turningSpark;
 
   private final RelativeEncoder m_drivingEncoder;
-  private final CANcoder m_turningEncoder;
+  public final CANcoder m_turningEncoder;
 
   private final SparkClosedLoopController m_drivingClosedLoopController;
-  private final SparkClosedLoopController m_turningClosedLoopController;
+  private final PIDController m_turningClosedLoopController;
 
   private double m_chassisAngularOffset = 0;
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
@@ -49,10 +52,11 @@ public class MAXSwerveModule {
     m_drivingEncoder = m_drivingSpark.getEncoder();
     m_drivingEncoder.setPosition(0);
     m_turningEncoder =  new CANcoder(absoluteEncoderCANId);
-    m_turningEncoder.setPosition(0);
+    //m_turningEncoder.setPosition(0);
 
     m_drivingClosedLoopController = m_drivingSpark.getClosedLoopController();
-    m_turningClosedLoopController = m_turningSpark.getClosedLoopController();
+    m_turningClosedLoopController = new PIDController(0.6, 0, 0.0);
+    m_turningClosedLoopController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Apply the respective configurations to the SPARKS. Reset parameters before
     // applying the configuration to bring the SPARK to a known good state. Persist
@@ -63,9 +67,13 @@ public class MAXSwerveModule {
         PersistMode.kPersistParameters);
 
     m_chassisAngularOffset = chassisAngularOffset;
-    m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble());
+    m_desiredState.angle = new Rotation2d(getAbsoluteEncoderRad());
     m_drivingEncoder.setPosition(0);
   }
+
+  public double getAbsoluteEncoderRad() {
+		return (m_turningEncoder.getAbsolutePosition().getValueAsDouble()) * (2 * Math.PI);
+	}
 
   /**
    * Returns the current state of the module.
@@ -76,7 +84,7 @@ public class MAXSwerveModule {
     // Apply chassis angular offset to the encoder position to get the position
     // relative to the chassis.
     return new SwerveModuleState(m_drivingEncoder.getVelocity(),
-        new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble() - m_chassisAngularOffset));
+        new Rotation2d(getAbsoluteEncoderRad() - m_chassisAngularOffset));
   }
 
   /**
@@ -89,7 +97,7 @@ public class MAXSwerveModule {
     // relative to the chassis.
     return new SwerveModulePosition(
         m_drivingEncoder.getPosition(),
-        new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble() - m_chassisAngularOffset));
+        new Rotation2d(getAbsoluteEncoderRad() - m_chassisAngularOffset));
   }
 
   /**
@@ -104,11 +112,13 @@ public class MAXSwerveModule {
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
     // Optimize the reference state to avoid spinning further than 90 degrees.
-    correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition().getValueAsDouble()));
+    correctedDesiredState.optimize(new Rotation2d(getAbsoluteEncoderRad()));
 
     // Command driving and turning SPARKS towards their respective setpoints.
     m_drivingClosedLoopController.setSetpoint(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
-    m_turningClosedLoopController.setSetpoint(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
+
+    final double turnOutput = m_turningClosedLoopController.calculate(getAbsoluteEncoderRad(), correctedDesiredState.angle.getRadians());
+    m_turningSpark.set(turnOutput);
 
     m_desiredState = desiredState;
   }
