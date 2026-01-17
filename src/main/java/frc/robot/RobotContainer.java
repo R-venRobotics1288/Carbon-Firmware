@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+import frc.robot.Shuffle;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,16 +40,21 @@ import java.util.List;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  //private final CommandXboxController m_driverController =
-      //new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  XboxController m_driverController = new XboxController(0);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    m_robotDrive.setDefaultCommand(new RunCommand(
+      () -> m_robotDrive.drive(
+        -MathUtil.applyDeadband(m_driverController.getLeftY(), Constants.DriveConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(m_driverController.getLeftX(), Constants.DriveConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(m_driverController.getRightX(), Constants.DriveConstants.kDriveDeadband),
+        Shuffle.fieldRelative),
+        m_robotDrive));
   }
 
   /**
@@ -68,6 +74,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
   }
 
   /**
