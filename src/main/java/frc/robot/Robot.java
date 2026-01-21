@@ -60,6 +60,8 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     tmpentry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble());
+
+    m_robotContainer.shuffle_refresh();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
