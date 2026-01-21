@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
  * constants are needed, to reduce verbosity.
  */
 public final class Shuffle {
-  public static boolean fieldRelative;
+  public static boolean fieldRelative = true;
   // Driving Parameters - Note that these are not the maximum capable speeds of
   // the robot, rather the allowed maximum speeds
   public static final double kMaxSpeedMetersPerSecond = 0.06;

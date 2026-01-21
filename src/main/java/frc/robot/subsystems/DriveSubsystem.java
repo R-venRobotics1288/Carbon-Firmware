@@ -47,7 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightAbsoluteEncoderCanId);
 
   // The gyro sensor
-  private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
