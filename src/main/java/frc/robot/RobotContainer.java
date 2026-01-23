@@ -26,9 +26,9 @@ public class RobotContainer {
   
   public Shuffle m_shuffle = new Shuffle();
 
-  public SlewRateLimiter translationfilterx = new SlewRateLimiter(Shuffle.slewrate_translation);
-  public SlewRateLimiter translationfiltery = new SlewRateLimiter(Shuffle.slewrate_translation);
-  public SlewRateLimiter rotationfilter = new SlewRateLimiter(Shuffle.slewrate_rotation);
+  public SlewRateLimiter translationfilterx = new SlewRateLimiter(ShuffleValues.slewrate_translation);
+  public SlewRateLimiter translationfiltery = new SlewRateLimiter(ShuffleValues.slewrate_translation);
+  public SlewRateLimiter rotationfilter = new SlewRateLimiter(ShuffleValues.slewrate_rotation);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -36,10 +36,10 @@ public class RobotContainer {
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
       () -> m_robotDrive.drive(
-        -MathUtil.applyDeadband(translationfiltery.calculate(m_driverController.getLeftY()), Shuffle.kDriveDeadband),
-        -MathUtil.applyDeadband(translationfilterx.calculate(m_driverController.getLeftX()), Shuffle.kDriveDeadband),
-        -MathUtil.applyDeadband(rotationfilter.calculate(m_driverController.getRightX()), Shuffle.kDriveDeadband),
-        Shuffle.kfieldRelative),
+        -MathUtil.applyDeadband(translationfiltery.calculate(m_driverController.getLeftY()), ShuffleValues.kDriveDeadband),
+        -MathUtil.applyDeadband(translationfilterx.calculate(m_driverController.getLeftX()), ShuffleValues.kDriveDeadband),
+        -MathUtil.applyDeadband(rotationfilter.calculate(m_driverController.getRightX()), ShuffleValues.kDriveDeadband),
+        ShuffleValues.kfieldRelative),
         m_robotDrive));
   }
 
@@ -73,7 +73,7 @@ public class RobotContainer {
     return Autos.exampleAuto(m_exampleSubsystem);
   }*/
 
-  public void shuffle_refresh() {
+  public void refresh_shuffleboard() {
     m_shuffle.refreshValues(translationfilterx, translationfiltery, rotationfilter);
   }
 }

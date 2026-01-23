@@ -59,9 +59,9 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    tmpentry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble());
+   // tmpentry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble());
 
-    m_robotContainer.shuffle_refresh();
+    m_robotContainer.refresh_shuffleboard();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
