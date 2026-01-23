@@ -60,6 +60,9 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+   // tmpentry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble());
+
+    m_robotContainer.refresh_shuffleboard();
     tmpentry.setDouble(m_robotContainer.m_robotDrive.m_gyro.getAngle(IMUAxis.kZ));
   }
 

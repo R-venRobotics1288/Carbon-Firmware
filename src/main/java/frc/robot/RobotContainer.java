@@ -4,33 +4,13 @@
 
 package frc.robot;
 
-//import frc.robot.Constants.OperatorConstants;
-//import frc.robot.commands.Autos;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
-import frc.robot.Shuffle;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -46,9 +26,9 @@ public class RobotContainer {
   
   public Shuffle m_shuffle = new Shuffle();
 
-  private SlewRateLimiter translationfilterx = new SlewRateLimiter(Shuffle.slewrate_translation);
-  private SlewRateLimiter translationfiltery = new SlewRateLimiter(Shuffle.slewrate_translation);
-  private SlewRateLimiter rotationfilter = new SlewRateLimiter(Shuffle.slewrate_rotation);
+  public SlewRateLimiter translationfilterx = new SlewRateLimiter(ShuffleValues.slewrate_translation);
+  public SlewRateLimiter translationfiltery = new SlewRateLimiter(ShuffleValues.slewrate_translation);
+  public SlewRateLimiter rotationfilter = new SlewRateLimiter(ShuffleValues.slewrate_rotation);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -56,10 +36,10 @@ public class RobotContainer {
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
       () -> m_robotDrive.drive(
-        -MathUtil.applyDeadband(translationfiltery.calculate(m_driverController.getLeftY()), Shuffle.kDriveDeadband),
-        -MathUtil.applyDeadband(translationfilterx.calculate(m_driverController.getLeftX()), Shuffle.kDriveDeadband),
-        -MathUtil.applyDeadband(rotationfilter.calculate(m_driverController.getRightX()), Shuffle.kDriveDeadband),
-        Shuffle.fieldRelative),
+        -MathUtil.applyDeadband(translationfiltery.calculate(m_driverController.getLeftY()), ShuffleValues.kDriveDeadband),
+        -MathUtil.applyDeadband(translationfilterx.calculate(m_driverController.getLeftX()), ShuffleValues.kDriveDeadband),
+        -MathUtil.applyDeadband(rotationfilter.calculate(m_driverController.getRightX()), ShuffleValues.kDriveDeadband),
+        ShuffleValues.kfieldRelative),
         m_robotDrive));
   }
 
@@ -92,4 +72,8 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return Autos.exampleAuto(m_exampleSubsystem);
   }*/
+
+  public void refresh_shuffleboard() {
+    m_shuffle.refreshValues(translationfilterx, translationfiltery, rotationfilter);
+  }
 }
