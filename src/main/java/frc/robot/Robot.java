@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -62,6 +63,7 @@ public class Robot extends TimedRobot {
    // tmpentry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble());
 
     m_robotContainer.refresh_shuffleboard();
+    tmpentry.setDouble(m_robotContainer.m_robotDrive.m_gyro.getAngle(IMUAxis.kZ));
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
