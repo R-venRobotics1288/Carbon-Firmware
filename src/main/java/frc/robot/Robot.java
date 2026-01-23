@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
    // tmpentry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble());
 
     m_robotContainer.refresh_shuffleboard();
-    tmpentry.setDouble(m_robotContainer.m_robotDrive.m_gyro.getAngle(IMUAxis.kZ));
+    tmpentry.setDouble(m_robotContainer.m_robotDrive.m_gyro.getYaw().getValueAsDouble());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
