@@ -26,15 +26,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
  */
 
 public final class Shuffle {
-  public static boolean fieldRelative = true;
-  // Driving Parameters - Note that these are not the maximum capable speeds of
-  // the robot, rather the allowed maximum speeds
-  public static final double kMaxSpeedMetersPerSecond = 0.06;
-  public static final double kMaxAngularSpeed = 0.1 * Math.PI; // radians per second
-  public static final double kDriveDeadband = 0.075;
-  public static double slewrate_translation = 0.5;
-  public static double slewrate_rotation = 0.3;
-
   public ShuffleboardTab shuffleTab = Shuffleboard.getTab("tooning");
 
   private GenericEntry slew = shuffleTab.addPersistent("xy slew",
