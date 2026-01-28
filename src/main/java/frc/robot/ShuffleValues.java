@@ -1,8 +1,14 @@
 package frc.robot;
 import java.util.Map;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
+
 
 public class ShuffleValues {
+
+  public static SlewRateLimiter translationfilterx = new SlewRateLimiter(ShuffleValues.slewrate_translation);
+  public static SlewRateLimiter translationfiltery = new SlewRateLimiter(ShuffleValues.slewrate_translation);
+  public static SlewRateLimiter rotationfilter = new SlewRateLimiter(ShuffleValues.slewrate_rotation);
     public static boolean SHUFFLE_MANAGER_ENABLED = true;
 
   public static boolean kfieldRelative = false;

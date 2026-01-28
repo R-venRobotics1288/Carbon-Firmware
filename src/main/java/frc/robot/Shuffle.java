@@ -30,7 +30,7 @@ public final class Shuffle {
 
   private GenericEntry slew = shuffleTab.addPersistent("xy slew",
       ShuffleValues.slewrate_translation)
-      .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0,
+      .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1,
           "max", 10))
       .getEntry();
   private GenericEntry maxSpeed = shuffleTab.addPersistent("max speed",
@@ -41,37 +41,32 @@ public final class Shuffle {
   private GenericEntry maxRot = shuffleTab.addPersistent("max rot per s",
       ShuffleValues.kMaxAngularSpeed)
       .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0,
-          "max", 1))
+          "max", 10))
       .getEntry();
   private GenericEntry rotSlew = shuffleTab.addPersistent("rotation slew",
       ShuffleValues.slewrate_rotation)
-      .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0,
+      .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1,
           "max", 10))
       .getEntry();
   private GenericEntry fieldRelative = shuffleTab.addPersistent("field relative", ShuffleValues.kfieldRelative)
       .withWidget(BuiltInWidgets.kToggleButton).getEntry();
 
-  public void refreshValues(SlewRateLimiter x, SlewRateLimiter y, SlewRateLimiter rotation) {
+  public void refreshValues() {
     if (ShuffleValues.SHUFFLE_MANAGER_ENABLED) {
       if (ShuffleValues.kMaxSpeedMetersPerSecond != maxSpeed.getDouble(ShuffleValues.kMaxSpeedMetersPerSecond)) {
         ShuffleValues.kMaxSpeedMetersPerSecond = maxSpeed.getDouble(ShuffleValues.kMaxSpeedMetersPerSecond);
-        System.out.println("changed speed");
       }
       if (ShuffleValues.kMaxAngularSpeed != maxRot.getDouble(ShuffleValues.kMaxAngularSpeed)) {
         ShuffleValues.kMaxAngularSpeed = maxRot.getDouble(ShuffleValues.kMaxAngularSpeed);
       }
       if (ShuffleValues.slewrate_translation != slew.getDouble(ShuffleValues.slewrate_translation)) {
         ShuffleValues.slewrate_translation = slew.getDouble(ShuffleValues.slewrate_translation);
-        x = new SlewRateLimiter(ShuffleValues.slewrate_translation);
-        y = new SlewRateLimiter(ShuffleValues.slewrate_translation);
+        ShuffleValues.translationfilterx = new SlewRateLimiter(ShuffleValues.slewrate_translation);
+        ShuffleValues.translationfiltery = new SlewRateLimiter(ShuffleValues.slewrate_translation);
       }
       if (ShuffleValues.slewrate_rotation != rotSlew.getDouble(ShuffleValues.slewrate_rotation)) {
         ShuffleValues.slewrate_rotation = rotSlew.getDouble(ShuffleValues.slewrate_rotation);
-        rotation = new SlewRateLimiter(rotSlew.getDouble(ShuffleValues.slewrate_rotation));
-      }
-      if (ShuffleValues.slewrate_rotation != rotSlew.getDouble(ShuffleValues.slewrate_rotation)) {
-        ShuffleValues.slewrate_rotation = rotSlew.getDouble(ShuffleValues.slewrate_rotation);
-        rotation = new SlewRateLimiter(rotSlew.getDouble(ShuffleValues.slewrate_rotation));
+        ShuffleValues.rotationfilter = new SlewRateLimiter(rotSlew.getDouble(ShuffleValues.slewrate_rotation));
       }
       if (ShuffleValues.kfieldRelative != fieldRelative.getBoolean(ShuffleValues.kfieldRelative)) {
         ShuffleValues.kfieldRelative = fieldRelative.getBoolean(ShuffleValues.kfieldRelative);

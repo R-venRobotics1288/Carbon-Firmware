@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    //m_robotContainer.m_robotDrive.resetGyro();
     tmpentry = m_robotContainer.m_shuffle.shuffleTab
         .add("front left encoder",
             m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble())
