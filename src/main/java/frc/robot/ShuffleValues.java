@@ -11,7 +11,7 @@ public class ShuffleValues {
   public static SlewRateLimiter rotationfilter = new SlewRateLimiter(ShuffleValues.slewrate_rotation);
     public static boolean SHUFFLE_MANAGER_ENABLED = true;
 
-  public static boolean kfieldRelative = false;
+  public static boolean kfieldRelative = true;
   // Driving Parameters - Note that these are not the maximum capable speeds of
   // the robot, rather the allowed maximum speeds
   public static double kMaxSpeedMetersPerSecond = 0.06;

@@ -12,6 +12,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
@@ -65,7 +66,9 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    startButton.onTrue(new RunCommand(() -> m_robotDrive.m_gyro.reset()));
+    startButton.onTrue(Commands.runOnce(() -> {
+      m_robotDrive.resetGyro();
+    }, m_robotDrive));
   }
 
   /**
