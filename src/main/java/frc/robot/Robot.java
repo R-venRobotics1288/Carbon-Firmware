@@ -39,9 +39,10 @@ public class Robot extends TimedRobot {
         .add("front left encoder",
             m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble())
         .getEntry();
-  }
 
-  /**
+      }
+      
+      /**
    * This function is called every 20 ms, no matter the mode. Use this for items
    * like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
@@ -61,10 +62,12 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-   // tmpentry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble());
-
+    // tmpentry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble());
+    
     m_robotContainer.refresh_shuffleboard();
     tmpentry.setDouble(m_robotContainer.m_robotDrive.m_gyro.getYaw().getValueAsDouble());
+    //m_robotContainer.printLimeLight();
+    m_robotContainer.updateOdometry();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
