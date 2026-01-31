@@ -50,8 +50,13 @@ public final class Shuffle {
       .getEntry();
   private GenericEntry fieldRelative = shuffleTab.addPersistent("field relative", ShuffleValues.kfieldRelative)
       .withWidget(BuiltInWidgets.kToggleButton).getEntry();
+  public GenericEntry desiredPosition = shuffleTab.add("desiredPosition", 0).getEntry();
+  public GenericEntry actualPosition = shuffleTab.add("actualPosition", 0).getEntry();
 
-  public void refreshValues() {
+  public void refreshValue(double desiredpos, double actualpos) {
+    desiredPosition.setDouble(desiredpos);
+    actualPosition.setDouble(actualpos);
+
     if (ShuffleValues.SHUFFLE_MANAGER_ENABLED) {
       if (ShuffleValues.kMaxSpeedMetersPerSecond != maxSpeed.getDouble(ShuffleValues.kMaxSpeedMetersPerSecond)) {
         ShuffleValues.kMaxSpeedMetersPerSecond = maxSpeed.getDouble(ShuffleValues.kMaxSpeedMetersPerSecond);

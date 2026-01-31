@@ -84,6 +84,6 @@ public class RobotContainer {
    */
 
   public void refresh_shuffleboard() {
-    m_shuffle.refreshValues();
+    m_shuffle.refreshValue(m_robotDrive.m_frontLeft.getState().angle.getRadians(), m_robotDrive.m_frontLeft.getPosition().angle.getRadians());
   }
 }
