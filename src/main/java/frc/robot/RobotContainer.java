@@ -100,6 +100,7 @@ public class RobotContainer {
    */
   
    public void updateOdometry() {
+    m_robotDrive.periodic();
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
     m_robotDrive.m_poseEstimator.addVisionMeasurement(
        limelightMeasurement.pose,
