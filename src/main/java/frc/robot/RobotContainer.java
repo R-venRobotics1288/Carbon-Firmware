@@ -58,11 +58,12 @@ public class RobotContainer {
                 ShuffleValues.kDriveDeadband),
             ShuffleValues.kfieldRelative),
         m_robotDrive));
-    LimelightHelpers.SetRobotOrientation("limelight", m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.SetRobotOrientation("limelight",
+        m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
-    m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+    m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
     m_robotDrive.m_poseEstimator.addVisionMeasurement(
-       limelightMeasurement.pose,
+        limelightMeasurement.pose,
         limelightMeasurement.timestampSeconds);
     SmartDashboard.putData("Field", m_field);
   }
@@ -98,18 +99,23 @@ public class RobotContainer {
    * return Autos.exampleAuto(m_exampleSubsystem);
    * }
    */
-  
-   public void updateOdometry() {
+
+  public void updateOdometry() {
     m_robotDrive.periodic();
-    LimelightHelpers.SetRobotOrientation("limelight", m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.SetRobotOrientation("limelight",
+        m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
-    m_robotDrive.m_poseEstimator.addVisionMeasurement(
-       limelightMeasurement.pose,
-        limelightMeasurement.timestampSeconds);
-   }
+    if (limelightMeasurement.tagCount >= 2) { // Only trust measurement if we see multiple tags
+      m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+      m_robotDrive.m_poseEstimator.addVisionMeasurement(
+          limelightMeasurement.pose,
+          limelightMeasurement.timestampSeconds);
+    }
+  }
 
   public void refresh_shuffleboard() {
-    m_shuffle.refreshValue(m_robotDrive.m_frontLeft.getState().angle.getRadians(), m_robotDrive.m_frontLeft.getPosition().angle.getRadians());
+    m_shuffle.refreshValue(m_robotDrive.m_frontLeft.getState().angle.getRadians(),
+        m_robotDrive.m_frontLeft.getPosition().angle.getRadians());
     m_field.setRobotPose(m_robotDrive.getPose());
   }
 
