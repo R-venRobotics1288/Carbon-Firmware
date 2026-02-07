@@ -80,9 +80,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    startButton.onTrue(Commands.runOnce(() -> {
-      m_robotDrive.resetGyro();
-    }, m_robotDrive));
+    startButton.onTrue(Commands.runOnce(() -> m_robotDrive.resetGyro()));
   }
 
   /**
