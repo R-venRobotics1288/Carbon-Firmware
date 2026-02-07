@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.jni.Pose3dJNI;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -52,6 +53,8 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   public final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroCanID);
 
+  private SwerveModuleState[] m_swerveModuleStates;
+
   // Odometry class for tracking robot pose
   public SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
@@ -62,7 +65,6 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
       }, new Pose2d(0, 0, new Rotation2d()));
-
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
@@ -123,17 +125,21 @@ public class DriveSubsystem extends SubsystemBase {
     double ySpeedDelivered = ySpeed * ShuffleValues.kMaxSpeedMetersPerSecond;
     double rotDelivered = rot * ShuffleValues.kMaxAngularSpeed;
 
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+    m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
                 Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, ShuffleValues.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_rearLeft.setDesiredState(swerveModuleStates[2]);
-    m_rearRight.setDesiredState(swerveModuleStates[3]);
+        m_swerveModuleStates, ShuffleValues.kMaxSpeedMetersPerSecond);
+    m_frontLeft.setDesiredState(m_swerveModuleStates[0]);
+    m_frontRight.setDesiredState(m_swerveModuleStates[1]);
+    m_rearLeft.setDesiredState(m_swerveModuleStates[2]);
+    m_rearRight.setDesiredState(m_swerveModuleStates[3]);
+  }
+
+  public void driveRobotRelative(double x, double y, double rot) {
+    drive(x, y, rot, true);
   }
 
   /**
@@ -180,6 +186,11 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getHeading() {
     return Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()).getDegrees();
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    ChassisSpeeds chassisSpeeds = DriveConstants.kDriveKinematics.toChassisSpeeds(m_swerveModuleStates);
+    return chassisSpeeds;
   }
 
   /**
