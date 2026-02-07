@@ -98,7 +98,7 @@ public class RobotContainer {
   public void updateOdometry() {
     LimelightHelpers.SetRobotOrientation("limelight",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
+    limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
     if (limelightMeasurement.tagCount >= 2) { // Only trust measurement if we see multiple tags
       m_robotDrive.m_poseEstimator.addVisionMeasurement(
           limelightMeasurement.pose,
@@ -113,6 +113,6 @@ public class RobotContainer {
   }
 
   public void printLimeLight() {
-    System.out.println(LimelightHelpers.getTX(""));
+    System.out.println(LimelightHelpers.getTX("limelight"));
   }
 }
