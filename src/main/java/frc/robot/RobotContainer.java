@@ -101,7 +101,6 @@ public class RobotContainer {
    */
 
   public void updateOdometry() {
-    m_robotDrive.periodic();
     LimelightHelpers.SetRobotOrientation("limelight",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
