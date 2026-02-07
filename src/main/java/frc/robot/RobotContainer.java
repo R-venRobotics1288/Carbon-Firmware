@@ -58,13 +58,10 @@ public class RobotContainer {
                 ShuffleValues.kDriveDeadband),
             ShuffleValues.kfieldRelative),
         m_robotDrive));
-    LimelightHelpers.SetRobotOrientation("limelight",
-        m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
+    
+    // Set vision measurement standard deviations once at startup
     m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-    m_robotDrive.m_poseEstimator.addVisionMeasurement(
-        limelightMeasurement.pose,
-        limelightMeasurement.timestampSeconds);
+    
     SmartDashboard.putData("Field", m_field);
   }
 
@@ -105,7 +102,6 @@ public class RobotContainer {
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
     if (limelightMeasurement.tagCount >= 2) { // Only trust measurement if we see multiple tags
-      m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
       m_robotDrive.m_poseEstimator.addVisionMeasurement(
           limelightMeasurement.pose,
           limelightMeasurement.timestampSeconds);
