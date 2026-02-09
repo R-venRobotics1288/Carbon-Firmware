@@ -91,8 +91,8 @@ public class RobotContainer {
    */
 
   public void refresh_shuffleboard() {
-    m_shuffle.refreshValue(m_robotDrive.m_frontLeft.getState().angle.getRadians(),
-        m_robotDrive.m_frontLeft.getPosition().angle.getRadians());
+    m_shuffle.refreshValue(m_robotDrive.m_frontLeft.getState().angle.getDegrees(),
+        m_robotDrive.m_frontLeft.getPosition().angle.getDegrees());
   }
 
   public void printLimeLight() {
