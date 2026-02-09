@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.ShuffleValues;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -71,9 +70,9 @@ public class GoToRelativePose extends Command {
         double thetaSpeed = m_thetaController.calculate(currentPose.getRotation().getRadians(), m_targetPose.getRotation().getRadians());
 
         // Clamp the output of the PID controllers to the robot's maximum speeds
-        xSpeed = MathUtil.clamp(xSpeed, -ShuffleValues.kMaxSpeedMetersPerSecond, ShuffleValues.kMaxSpeedMetersPerSecond);
-        ySpeed = MathUtil.clamp(ySpeed, -ShuffleValues.kMaxSpeedMetersPerSecond, ShuffleValues.kMaxSpeedMetersPerSecond);
-        thetaSpeed = MathUtil.clamp(thetaSpeed, -ShuffleValues.kMaxAngularSpeed, ShuffleValues.kMaxAngularSpeed);
+        xSpeed = MathUtil.clamp(xSpeed, -AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxSpeedMetersPerSecond);
+        ySpeed = MathUtil.clamp(ySpeed, -AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxSpeedMetersPerSecond);
+        thetaSpeed = MathUtil.clamp(thetaSpeed, -AutoConstants.kMaxAngularSpeedRadiansPerSecond, AutoConstants.kMaxAngularSpeedRadiansPerSecond);
 
         // Create ChassisSpeeds from the calculated speeds and pass to the subsystem
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, thetaSpeed, m_driveSubsystem.getPose().getRotation());
