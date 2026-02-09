@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private GenericEntry tmpentry;
+  private GenericEntry m_gyroYawEntry;
 
   private final RobotContainer m_robotContainer;
 
@@ -35,9 +35,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_robotContainer.m_robotDrive.resetGyro();
-    tmpentry = m_robotContainer.m_shuffle.shuffleTab
-        .add("front left encoder",
-            m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble())
+    m_gyroYawEntry = m_robotContainer.m_shuffle.shuffleTab
+        .add("Gyro Yaw", 0.0) // Corrected label, initial value is updated periodically
         .getEntry();
 
       }
@@ -60,7 +59,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();    
     m_robotContainer.refresh_shuffleboard();
-    tmpentry.setDouble(m_robotContainer.m_robotDrive.m_gyro.getYaw().getValueAsDouble());
+    m_gyroYawEntry.setDouble(m_robotContainer.m_robotDrive.m_gyro.getYaw().getValueAsDouble());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
