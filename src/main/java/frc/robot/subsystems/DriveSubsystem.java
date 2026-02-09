@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,7 +19,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.ShuffleValues;
+import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -52,6 +58,11 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   public final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroCanID);
 
+  // A Field2d for visualizing the robot's pose on the dashboard.
+  private final Field2d m_field = new Field2d();
+
+  private LimelightHelpers.PoseEstimate limelightMeasurement;
+
   // Odometry class for tracking robot pose
   public SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
@@ -67,6 +78,10 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
+
+    // Set vision measurement standard deviations once at startup
+    m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+    SmartDashboard.putData("Field", m_field);
   }
 
   @Override
@@ -80,6 +95,37 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+
+    // Update odometry with vision data
+    LimelightHelpers.SetRobotOrientation("limelight",
+        m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+
+    // Select the appropriate pose estimate based on the current alliance color.
+    // Default to Blue if the alliance is invalid (e.g., not connected to FMS).
+    if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+      limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
+    } else {
+      limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+    }
+
+    // Add a vision measurement if we have a valid measurement from the Limelight
+    if (limelightMeasurement.tagCount > 0) {
+      double xyStdDev;
+      // Scale standard deviation based on the quality of the measurement
+      if (limelightMeasurement.tagCount == 1) {
+        // A single tag is less reliable, so we give it a higher standard deviation
+        xyStdDev = 2.0;
+      } else {
+        // Multiple tags are more reliable. We can scale the standard deviation based on the
+        // average distance to the tags. A closer measurement is more reliable.
+        xyStdDev = Math.max(0.3, limelightMeasurement.avgTagDist * 0.4);
+      }
+
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStdDev, xyStdDev, 9999999));
+      m_poseEstimator.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
+    }
+
+    m_field.setRobotPose(getPose());
   }
 
   /**
