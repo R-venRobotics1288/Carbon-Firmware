@@ -99,10 +99,23 @@ public class RobotContainer {
     LimelightHelpers.SetRobotOrientation("limelight",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-    if (limelightMeasurement.tagCount >= 2) { // Only trust measurement if we see multiple tags
-      m_robotDrive.m_poseEstimator.addVisionMeasurement(
-          limelightMeasurement.pose,
-          limelightMeasurement.timestampSeconds);
+
+    // Add a vision measurement if we have a valid measurement from the Limelight
+    if (limelightMeasurement.tagCount > 0) {
+      double xyStdDev;
+      // Scale standard deviation based on the quality of the measurement
+      if (limelightMeasurement.tagCount == 1) {
+        // A single tag is less reliable, so we give it a higher standard deviation
+        xyStdDev = 2.0;
+      } else {
+        // Multiple tags are more reliable. We can scale the standard deviation based on the
+        // average distance to the tags. A closer measurement is more reliable.
+        // This formula is a starting point; you can tune it based on performance.
+        xyStdDev = Math.max(0.3, limelightMeasurement.avgTagDist * 0.4);
+      }
+
+      m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStdDev, xyStdDev, 9999999));
+      m_robotDrive.m_poseEstimator.addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
     }
   }
 
