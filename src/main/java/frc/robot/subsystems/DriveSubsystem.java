@@ -182,6 +182,20 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * Sets the drivetrain to move at the specified chassis speeds.
+   * @param speeds The desired chassis speeds.
+   */
+  public void setChassisSpeeds(ChassisSpeeds speeds) {
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, ShuffleValues.kMaxSpeedMetersPerSecond);
+    m_frontLeft.setDesiredState(swerveModuleStates[0]);
+    m_frontRight.setDesiredState(swerveModuleStates[1]);
+    m_rearLeft.setDesiredState(swerveModuleStates[2]);
+    m_rearRight.setDesiredState(swerveModuleStates[3]);
+  }
+
+  /**
    * Sets the wheels into an X formation to prevent movement.
    */
   public void setX() {

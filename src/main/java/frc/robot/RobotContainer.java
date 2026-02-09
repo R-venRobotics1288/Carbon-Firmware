@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.GoToRelativePose;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -29,6 +31,7 @@ public class RobotContainer {
 
   XboxController m_driverController = new XboxController(0);
   Trigger startButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
+  Trigger aButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
 
   public Shuffle m_shuffle = new Shuffle();
 
@@ -66,6 +69,13 @@ public class RobotContainer {
    */
   private void configureBindings() {
     startButton.onTrue(Commands.runOnce(() -> m_robotDrive.resetGyro()));
+
+    // When the 'A' button is pressed, run the GoToRelativePose command.
+    // The command will be cancelled if the driver moves the joysticks.
+    aButton.onTrue(new GoToRelativePose(m_robotDrive, m_driverController, 1.0, 0.5)
+        .until(() -> Math.abs(m_driverController.getLeftX()) > DriveConstants.kDriveDeadband ||
+                     Math.abs(m_driverController.getLeftY()) > DriveConstants.kDriveDeadband ||
+                     Math.abs(m_driverController.getRightX()) > DriveConstants.kDriveDeadband));
   }
 
   /**
