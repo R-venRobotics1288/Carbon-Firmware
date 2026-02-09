@@ -185,11 +185,13 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Returns the turn rate of the robot.
    *
-   * @return The turn rate of the robot, in degrees per second
-
+   * @return The turn rate of the robot, in radians per second
+   */
   public double getTurnRate() {
-    return m_gyro.getRate(IMUAxis.kZ) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-  } */
+    // getValueAsDouble() returns the angular velocity in rotations per second.
+    // We then convert rotations per second to radians per second.
+    return m_gyro.getAngularVelocityZWorld().getValueAsDouble() * (2 * Math.PI);
+  }
 
   /**
    * Stops all module motors.
