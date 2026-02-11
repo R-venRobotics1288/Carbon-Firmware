@@ -89,8 +89,8 @@ public class DriveSubsystem extends SubsystemBase {
                                                               // module feedforwards
         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic
                                         // drive trains
-            new PIDConstants(8.0, 0.0, 0.05), // Translation PID constants
-            new PIDConstants(6.2, 0.0, 0.06) // Rotation PID constants
+            new PIDConstants(0.25, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(0.25, 0.0, 0.0) // Rotation PID constants
         ),
         config, // The robot configuration
         () -> {
@@ -180,7 +180,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void driveRobotRelative(ChassisSpeeds speeds) {
     m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        m_swerveModuleStates, 0.05);
+        m_swerveModuleStates, 0.5);
      m_frontLeft.setDesiredState(m_swerveModuleStates[0]);
     m_frontRight.setDesiredState(m_swerveModuleStates[1]);
     m_rearLeft.setDesiredState(m_swerveModuleStates[2]);
