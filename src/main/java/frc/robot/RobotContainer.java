@@ -8,13 +8,16 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.commands.GoToRelativePose;
+import frc.robot.commands.GoToPose;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -72,10 +75,17 @@ public class RobotContainer {
 
     // When the 'A' button is pressed, run the GoToRelativePose command.
     // The command will be cancelled if the driver moves the joysticks.
-    aButton.onTrue(new GoToRelativePose(m_robotDrive, m_driverController, 1.0, 0.5)
-        .until(() -> Math.abs(m_driverController.getLeftX()) > DriveConstants.kDriveDeadband ||
-                     Math.abs(m_driverController.getLeftY()) > DriveConstants.kDriveDeadband ||
-                     Math.abs(m_driverController.getRightX()) > DriveConstants.kDriveDeadband));
+    aButton.onTrue(
+        Commands.runOnce(() -> {
+          // Get the robot's current pose
+          Pose2d currentPose = m_robotDrive.getPose();
+          // Define the desired field-relative translation
+          Translation2d fieldRelativeTranslation = new Translation2d(1.0, 0.5);
+          // Create the target pose by adding the translation to the current pose's translation
+          Pose2d targetPose = new Pose2d(currentPose.getTranslation().plus(fieldRelativeTranslation), currentPose.getRotation());
+          // Schedule the command to go to the absolute target pose
+          new GoToPose(m_robotDrive, m_driverController, targetPose).schedule();
+        }));
   }
 
   /**
