@@ -1,6 +1,6 @@
 Pigeon: 
 -CANId #1
--Will be an centered as possible with offsets given as needed.
+-Will be as centered as possible with offsets given as needed.
 
 Power Distributer:
 -CANId #2
@@ -10,7 +10,9 @@ Limelight:
 -Will make the way its facing the front of the robot
 
 Swerve:
--MK4 Speed 2
+-MK4 L2
+-Gear Ratio: 6.75
+-Radius: 2" Diameter: 4" (w/ tread)
 -CANIds #4-15
 -Will have same IDs as current swerve after the change
 
