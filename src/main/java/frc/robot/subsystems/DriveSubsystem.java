@@ -17,9 +17,11 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.ShuffleValues;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -54,7 +56,8 @@ public class DriveSubsystem extends SubsystemBase {
   public final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroCanID);
 
   // These are updated in `drive()` and used in `getRobotRelativeSpeeds()`
-  private SwerveModuleState[] m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
+  private SwerveModuleState[] m_swerveModuleStates = DriveConstants.kDriveKinematics
+      .toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
   private final SwerveModulePosition[] m_modulePositions = new SwerveModulePosition[4]; // To avoid GC in periodic
 
   // Odometry class for tracking robot pose
@@ -66,12 +69,11 @@ public class DriveSubsystem extends SubsystemBase {
           m_frontRight.getPosition(),
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
-      }, new Pose2d(0, 0, new Rotation2d())
-  );
+      }, new Pose2d(0, 0, new Rotation2d()));
 
   /** Creates a new DriveSubsystem. */
   RobotConfig config;
-      
+
   public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
@@ -91,8 +93,8 @@ public class DriveSubsystem extends SubsystemBase {
                                                               // module feedforwards
         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic
                                         // drive trains
-            new PIDConstants(0.5, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(0.075, 0.0, 0.0) // Rotation PID constants
+            new PIDConstants(0.7, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(0.3, 0.0, 0.0) // Rotation PID constants
         ),
         config, // The robot configuration
         () -> {
@@ -176,9 +178,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void driveRobotRelative(ChassisSpeeds speeds) {
     m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        m_swerveModuleStates, 2);
-     m_frontLeft.setDesiredState(m_swerveModuleStates[0]);
+    // SwerveDriveKinematics.desaturateWheelSpeeds(m_swerveModuleStates,
+    // ShuffleValues.kMaxSpeedMetersPerSecond);
+    m_frontLeft.setDesiredState(m_swerveModuleStates[0]);
     m_frontRight.setDesiredState(m_swerveModuleStates[1]);
     m_rearLeft.setDesiredState(m_swerveModuleStates[2]);
     m_rearRight.setDesiredState(m_swerveModuleStates[3]);
@@ -235,7 +237,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
-    ChassisSpeeds chassisSpeeds = DriveConstants.kDriveKinematics.toChassisSpeeds(m_swerveModuleStates);
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    states[0] = m_frontLeft.getState();
+    states[1] = m_frontRight.getState();
+    states[2] = m_rearLeft.getState();
+    states[3] = m_rearRight.getState();
+    ChassisSpeeds chassisSpeeds = DriveConstants.kDriveKinematics.toChassisSpeeds(states);
     return chassisSpeeds;
   }
 
