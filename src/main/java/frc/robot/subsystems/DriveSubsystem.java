@@ -53,7 +53,9 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   public final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroCanID);
 
-  private SwerveModuleState[] m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));;
+  // These are updated in `drive()` and used in `getRobotRelativeSpeeds()`
+  private SwerveModuleState[] m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
+  private final SwerveModulePosition[] m_modulePositions = new SwerveModulePosition[4]; // To avoid GC in periodic
 
   // Odometry class for tracking robot pose
   public SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
@@ -111,16 +113,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    m_modulePositions[0] = m_frontLeft.getPosition();
+    m_modulePositions[1] = m_frontRight.getPosition();
+    m_modulePositions[2] = m_rearLeft.getPosition();
+    m_modulePositions[3] = m_rearRight.getPosition();
     // Update the odometry in the periodic block
-    m_poseEstimator.update(
-        getGyroYaw(),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        }
-    );
+    m_poseEstimator.update(getGyroYaw(), m_modulePositions); // Use the pre-allocated array
   }
 
   /**
