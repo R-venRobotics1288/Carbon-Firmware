@@ -58,7 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   public SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()),
+      getGyroYaw(),
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -113,7 +113,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     m_poseEstimator.update(
-        new Rotation2d(m_gyro.getYaw().getValue()),
+        getGyroYaw(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -139,7 +139,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetPose(Pose2d pose) {
     m_poseEstimator.resetPosition(
-        new Rotation2d(m_gyro.getYaw().getValue()),
+        getGyroYaw(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -166,8 +166,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, getGyroYaw())
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         m_swerveModuleStates, ShuffleValues.kMaxSpeedMetersPerSecond);
@@ -231,6 +230,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getHeading() {
     return m_gyro.getYaw().getValueAsDouble();
+  }
+
+  private final Rotation2d getGyroYaw() {
+    return Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble());
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
