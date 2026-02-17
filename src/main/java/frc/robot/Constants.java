@@ -63,7 +63,7 @@ public final class Constants {
     public static final int kRearRightAbsoluteEncoderCanId = 11;
 
     //Gyro CAN ID
-    public static final int kGyroCanID = 14;
+    public static final int kGyroCanID = 1;
 
     public static final boolean kGyroReversed = false;
   }
