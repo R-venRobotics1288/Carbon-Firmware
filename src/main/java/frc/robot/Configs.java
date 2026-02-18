@@ -3,6 +3,7 @@ package frc.robot;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.ModuleConstants;
@@ -57,6 +58,22 @@ public final class Configs {
                     // longer route.
                     .positionWrappingEnabled(true)
                     .positionWrappingInputRange(0, turningFactor);
+        }
+
+    }
+
+    public static final class HopperConfigs {
+        public static final SparkFlexConfig shooterConfig = new SparkFlexConfig();
+        public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
+
+        static {
+                shooterConfig 
+                        .idleMode(IdleMode.kCoast)
+                        .smartCurrentLimit(80);
+                
+                intakeConfig
+                        .idleMode(IdleMode.kCoast) //maybe brake mode
+                        .smartCurrentLimit(80);
         }
     }
 }

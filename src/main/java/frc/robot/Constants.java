@@ -95,4 +95,12 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 6784;
   }
+
+  public static final class HopperConstants {
+    public static final int kShooterCANID = 17;
+    public static final int kIntakeCANID = 16;
+
+    public static final double kIntakeMotorSpeed = -0.30;
+    public static final double kShooterMotorSpeed = 0.80;
+  }
 }
