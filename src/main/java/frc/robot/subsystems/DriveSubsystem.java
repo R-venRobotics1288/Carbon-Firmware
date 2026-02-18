@@ -19,6 +19,10 @@ import frc.robot.ShuffleValues;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.io.Console;
+import java.io.Serial;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
@@ -93,7 +97,7 @@ public class DriveSubsystem extends SubsystemBase {
                                                               // module feedforwards
         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic
                                         // drive trains
-            new PIDConstants(0.7, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(1, 0.0, 0.0), // Translation PID constants
             new PIDConstants(0.3, 0.0, 0.0) // Rotation PID constants
         ),
         config, // The robot configuration
@@ -177,6 +181,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds speeds) {
+    System.out.println(speeds.vxMetersPerSecond);
+    System.out.println(speeds.vyMetersPerSecond);
     m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
     // SwerveDriveKinematics.desaturateWheelSpeeds(m_swerveModuleStates,
     // ShuffleValues.kMaxSpeedMetersPerSecond);
