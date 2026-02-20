@@ -22,12 +22,12 @@ public class HopperSubsystem extends SubsystemBase{
         m_intakeMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     
-    public void setShooterMotorSpeed() {
-        m_shooterMotor.set(HopperConstants.kShooterMotorSpeed);
+    public void setShooterMotorSpeed(double speed) {
+        m_shooterMotor.set(speed);
     }
 
-    public void setIntakeMotorSpeed(){
-        m_intakeMotor.set(HopperConstants.kIntakeMotorSpeed);
-        m_shooterMotor.set(-HopperConstants.kShooterMotorSpeed);
+    public void setIntakeMotorSpeed(double intakeSpeed, double shooterSpeed){
+        m_intakeMotor.set(intakeSpeed);
+        m_shooterMotor.set(shooterSpeed);
     }
 }

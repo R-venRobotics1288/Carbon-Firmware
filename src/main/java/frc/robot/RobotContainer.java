@@ -16,8 +16,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -34,9 +37,14 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public final HopperSubsystem m_hopper = new HopperSubsystem();
 
   XboxController m_driverController = new XboxController(0);
+  XboxController m_operatorController = new XboxController(1);
+
   Trigger startButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
+  Trigger shootButton = new JoystickButton(m_operatorController, XboxController.Button.kX.value);
+  Trigger intakeButton = new JoystickButton(m_operatorController, XboxController.Button.kY.value);
   Trigger rotateButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
   Trigger forwardButton = new JoystickButton(m_driverController, XboxController.Button.kB.value);
   Trigger leftButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
@@ -91,6 +99,9 @@ public class RobotContainer {
     startButton.onTrue(Commands.runOnce(() -> {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
+
+    shootButton.whileTrue(new ShootCommand(m_hopper));
+    intakeButton.whileTrue(new IntakeCommand(m_hopper));
 }
 
   /**
