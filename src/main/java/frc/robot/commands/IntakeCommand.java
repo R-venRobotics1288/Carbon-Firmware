@@ -5,21 +5,20 @@ import frc.robot.Constants.HopperConstants;
 import frc.robot.subsystems.HopperSubsystem;
 
 public class IntakeCommand extends Command {
-    private HopperSubsystem m_hopper;
-    
-    public IntakeCommand(HopperSubsystem m_hopper) {
-        this.m_hopper = m_hopper;
-        addRequirements(m_hopper);
+    private HopperSubsystem m_hopperSubsystem;
+
+    public IntakeCommand(HopperSubsystem hopperSubsystem) {
+        m_hopperSubsystem = hopperSubsystem;
+        addRequirements(hopperSubsystem);
     }
 
     @Override
-    public void initialize() { 
-        m_hopper.setIntakeMotorSpeed(HopperConstants.kIntakeMotorSpeed, -HopperConstants.kShooterMotorSpeed);
-        
+    public void initialize() {
+        m_hopperSubsystem.setIntakeMotorSpeed(HopperConstants.kIntakeMotorSpeed, -HopperConstants.kShooterMotorSpeed);
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_hopper.setIntakeMotorSpeed(0, 0);
+        m_hopperSubsystem.stopIntake();
     }
 }

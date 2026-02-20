@@ -103,4 +103,23 @@ public final class Constants {
     public static final double kIntakeMotorSpeed = -0.30;
     public static final double kShooterMotorSpeed = 0.80;
   }
+
+  public static final class ClimberConstants {
+    public static final int kLeftCANId = 18;
+    public static final int kRightCANId = 19; //may not use one motor
+
+    public static final double kGearRatio = 1.0; //change later
+
+    public static final double kMaxMotorSpeed = 1.0;
+
+    public static final double kP = 1.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final double kPositionTolerance = 0.05; //in meters
+
+    public static final double kDesiredPosZero = 0.0;
+    public static final double kRetractedDesiredPos = 0.05;
+    public static final double kDesiredPosOne = 0.3; //in meters, should be changed
+  }
 }

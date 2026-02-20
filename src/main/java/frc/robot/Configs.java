@@ -6,6 +6,7 @@ import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public final class Configs {
@@ -74,6 +75,19 @@ public final class Configs {
                 intakeConfig
                         .idleMode(IdleMode.kCoast) //maybe brake mode
                         .smartCurrentLimit(80);
+        }
+    }
+
+    public static final class ClimberConfig {
+        public static final SparkMaxConfig motorConfig = new SparkMaxConfig();
+        
+        static {
+                motorConfig
+                        .idleMode(IdleMode.kBrake)
+                        .smartCurrentLimit(80);
+                        
+                motorConfig.encoder
+                        .positionConversionFactor(ClimberConstants.kGearRatio);
         }
     }
 }
