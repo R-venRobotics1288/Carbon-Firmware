@@ -7,16 +7,21 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -111,6 +116,28 @@ public class RobotContainer {
           limelightMeasurement.pose,
           limelightMeasurement.timestampSeconds);
     }
+  }
+  
+  Pose2d startPose = null;
+  public Command getAutonomousCommand() {
+    // This method loads the auto when it is called, however, it is recommended
+    // to first load your paths/autos when code starts, then return the
+    // pre-loaded auto/path
+    //return new RunCommand(() -> {
+    //  if (startPose == null) {
+    //    startPose = m_robotDrive.m_poseEstimator.getEstimatedPosition();
+    //    m_robotDrive.drive(0.0, -0.3, 0, false);
+    //    return;
+    //  }
+    //  Transform2d cur = m_robotDrive.m_poseEstimator.getEstimatedPosition().minus(startPose);
+    //  if (Math.abs(cur.getX()) >= 2 || Math.abs(cur.getY()) >= 2) {
+    //    m_robotDrive.drive(0.0, 0.0, 0, false);
+    //    return;
+    //  }
+    //  System.out.println("X, Y: " + cur.getX() + ", " + cur.getY());
+    //  m_robotDrive.drive(0.0, -0.4, 0, false);
+    //}, m_robotDrive);
+    return new PathPlannerAuto("test");
   }
 
   public void refresh_shuffleboard() {
