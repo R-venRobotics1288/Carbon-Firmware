@@ -33,7 +33,7 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(18);
     // Distance between centers of right and left wheels on robot
     public static final double kWheelBase = Units.inchesToMeters(24);
-    public static final double kDriveDeadband = 0.05;
+    public static final double kDriveDeadband = 0.09;
     // Distance between front and rear wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(kWheelBase / 2, kTrackWidth / 2),

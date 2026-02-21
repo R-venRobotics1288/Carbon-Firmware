@@ -26,6 +26,9 @@ public class Robot extends TimedRobot {
   private GenericEntry m_FrontRightEntry;
   private GenericEntry m_RearLeftEntry;
   private GenericEntry m_RearRightEntry;
+  private GenericEntry m_JoystickX;
+  private GenericEntry m_JoystickY;
+  private GenericEntry m_JoystickRot;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -54,8 +57,20 @@ public class Robot extends TimedRobot {
         .add("rear right encoder radians",
             m_robotContainer.m_robotDrive.m_rearRight.m_turningEncoder.getAbsolutePosition().getValueAsDouble())
         .getEntry();
-      }
-      
+    m_JoystickX = m_robotContainer.m_shuffle.shuffleTab
+        .add("Joystick X value",
+          m_robotContainer.m_driverController.getLeftX())
+        .getEntry();
+    m_JoystickY = m_robotContainer.m_shuffle.shuffleTab
+        .add("Joystick Y value",
+          m_robotContainer.m_driverController.getLeftY())
+        .getEntry();
+    m_JoystickRot = m_robotContainer.m_shuffle.shuffleTab
+      .add("Joystick Rotation Value",
+        m_robotContainer.m_driverController.getRightX())
+      .getEntry();
+    }
+   
       /**
    * This function is called every 20 ms, no matter the mode. Use this for items
    * like diagnostics
@@ -83,6 +98,9 @@ public class Robot extends TimedRobot {
     m_FrontRightEntry.setDouble(m_robotContainer.m_robotDrive.m_frontRight.getAbsoluteEncoderRad());
     m_RearLeftEntry.setDouble(m_robotContainer.m_robotDrive.m_rearLeft.getAbsoluteEncoderRad());
     m_RearRightEntry.setDouble(m_robotContainer.m_robotDrive.m_rearRight.getAbsoluteEncoderRad());
+    m_JoystickX.setDouble(m_robotContainer.m_driverController.getLeftX());
+    m_JoystickY.setDouble(m_robotContainer.m_driverController.getLeftY());
+    m_JoystickRot.setDouble(m_robotContainer.m_driverController.getRightX());
     //m_robotContainer.printLimeLight();
     m_robotContainer.updateOdometry();
   }
