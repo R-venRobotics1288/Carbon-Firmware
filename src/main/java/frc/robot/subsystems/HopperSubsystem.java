@@ -5,6 +5,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs.HopperConfigs;
 import frc.robot.Constants.HopperConstants;
@@ -13,6 +14,7 @@ public class HopperSubsystem extends SubsystemBase {
 
     private final SparkFlex m_shooterMotor;
     private final SparkFlex m_intakeMotor;
+    private final InterpolatingDoubleTreeMap shooterPower;
 
     public HopperSubsystem() {
         m_shooterMotor = new SparkFlex(HopperConstants.kShooterCANID, MotorType.kBrushless);
@@ -22,10 +24,15 @@ public class HopperSubsystem extends SubsystemBase {
                 PersistMode.kPersistParameters);
         m_intakeMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
+        
+        shooterPower = new InterpolatingDoubleTreeMap();
+        shooterPower.put(1.0, 0.6);
+        shooterPower.put(2.0, 0.7);
+        shooterPower.put(3.0, 0.8);
     }
 
     public void setShooterMotorSpeed(double speed) {
-        m_shooterMotor.set(speed);
+        m_shooterMotor.set(speed);   
     }
 
     public void stopShooter() {
@@ -41,4 +48,9 @@ public class HopperSubsystem extends SubsystemBase {
         m_intakeMotor.stopMotor();
         m_shooterMotor.stopMotor();
     }
+
+    public double getPower(double distance) {
+        return shooterPower.get(distance);
+    }
+
 }

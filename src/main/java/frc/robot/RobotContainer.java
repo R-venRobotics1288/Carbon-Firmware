@@ -20,6 +20,7 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.commands.ClimberCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.VariableShootCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -48,7 +49,8 @@ public class RobotContainer {
   XboxController m_operatorController = new XboxController(1);
 
   Trigger startButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
-  Trigger shootButton = new JoystickButton(m_operatorController, XboxController.Button.kX.value);
+  Trigger variableShootButton = new JoystickButton(m_operatorController, XboxController.Button.kX.value);
+  Trigger shootButton = new JoystickButton(m_operatorController, XboxController.Button.kA.value);
   Trigger intakeButton = new JoystickButton(m_operatorController, XboxController.Button.kY.value);
   Trigger rotateButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
   Trigger forwardButton = new JoystickButton(m_driverController, XboxController.Button.kB.value);
@@ -111,6 +113,7 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
 
+    variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
     shootButton.whileTrue(new ShootCommand(m_hopper));
     intakeButton.whileTrue(new IntakeCommand(m_hopper));
     climbButton.onTrue(climbCommand);

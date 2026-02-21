@@ -5,20 +5,20 @@ import frc.robot.Constants.HopperConstants;
 import frc.robot.subsystems.HopperSubsystem;
 
 public class ShootCommand extends Command {
-    private HopperSubsystem m_hopperSubsystem;
+    private final HopperSubsystem m_HopperSubsystem;
 
     public ShootCommand(HopperSubsystem hopperSubsystem) {
-        m_hopperSubsystem = hopperSubsystem;
-        addRequirements(hopperSubsystem);
+        m_HopperSubsystem = hopperSubsystem;
+        addRequirements(m_HopperSubsystem);
     }
 
     @Override
     public void initialize() {
-        m_hopperSubsystem.setShooterMotorSpeed(HopperConstants.kShooterMotorSpeed);
+        m_HopperSubsystem.setShooterMotorSpeed(HopperConstants.kShooterMotorSpeed);
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_hopperSubsystem.stopIntake();
+        m_HopperSubsystem.stopShooter();
     }
 }

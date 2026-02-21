@@ -102,6 +102,9 @@ public final class Constants {
 
     public static final double kIntakeMotorSpeed = -0.30;
     public static final double kShooterMotorSpeed = 0.80;
+
+    public static final Translation2d kBlueHubPosition = new Translation2d(4.625, 4.035);
+    public static final Translation2d kRedHubPosition = new Translation2d(11.915, 4.035);
   }
 
   public static final class ClimberConstants {
