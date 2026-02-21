@@ -1,110 +1,110 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
+import static edu.wpi.first.units.Units.*;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>
- * It is advised to statically import this class (or one of its inner classes)
- * wherever the
- * constants are needed, to reduce verbosity.
- */
 public final class Constants {
+
+  public static final class HIDConstants {
+    public static final int DRIVER_CONTROLLER_PORT = 0;
+    public static final double DRIVER_CONTROLLER_DEADBAND = 0.05;
+    public static final double TRANSLATION_SLEW_LIMIT = 1; // TODO: Tune both slew rate limits.
+    public static final double ROTATION_SLEW_LIMIT = 0.5;
+  }
+
+  public static final class CANConstants {
+    public static final int PIGEON_ID = 1;
+
+    public static final int FRONT_LEFT_DRIVE_ID = 13;
+    public static final int FRONT_RIGHT_DRIVE_ID = 4;
+    public static final int REAR_LEFT_DRIVE_ID = 7;
+    public static final int REAR_RIGHT_DRIVE_ID = 10;
+
+    public static final int FRONT_LEFT_TURN_ID = 15;
+    public static final int FRONT_RIGHT_TURN_ID = 6;
+    public static final int REAR_LEFT_TURN_ID = 9;
+    public static final int REAR_RIGHT_TURN_ID = 12;
+
+    public static final int FRONT_LEFT_ABSOLUTE_ENCODER_ID = 14;
+    public static final int FRONT_RIGHT_ABSOLUTE_ENCODER_ID = 5;
+    public static final int REAR_LEFT_ABSOLUTE_ENCODER_ID = 8;
+    public static final int REAR_RIGHT_ABSOLUTE_ENCODER_ID = 11;
+  }
+
   public static final class DriveConstants {
-    // Driving Parameters - Note that these are not the maximum capable speeds of
-    // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 1.25;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    public static final String LIMELIGHT_HOSTNAME = "limelight";
+    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(5);
+    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(2.5);
 
-    // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(18);
-    // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(24);
-    public static final double kDriveDeadband = 0.09;
-    // Distance between front and rear wheels on robot
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-      new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-      new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-      new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-      new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
-      
-      // Angular offsets of the modules relative to the chassis in radians
-      public static final double kFrontLeftChassisAngularOffset = Math.PI; //+ (0.3583984375 * 2 * Math.PI);
-      public static final double kFrontRightChassisAngularOffset = 0; //+ (0.623779296875 * 2 * Math.PI);
-      public static final double kRearLeftChassisAngularOffset = 0; //+ (0.430419921875 * 2 * Math.PI);
-      public static final double kRearRightChassisAngularOffset = Math.PI; //+ (0.28466796875 * 2 * Math.PI);
+    public static final AngularVelocity MAX_TURN_RATE = RevolutionsPerSecond.of(0.85);
+    public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = RadiansPerSecondPerSecond.of(30);
 
-      // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 13;
-    public static final int kFrontRightDrivingCanId = 4;
-    public static final int kRearLeftDrivingCanId = 7;
-    public static final int kRearRightDrivingCanId = 10; 
+    public static final Distance TRACK_WIDTH = Inches.of(18);
+    public static final Distance WHEEL_BASE = Inches.of(24);
+    public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
+        new Translation2d(WHEEL_BASE.div(2), TRACK_WIDTH.div(2)),
+        new Translation2d(WHEEL_BASE.div(2), TRACK_WIDTH.div(2).unaryMinus()),
+        new Translation2d(WHEEL_BASE.div(2).unaryMinus(), TRACK_WIDTH.div(2)),
+        new Translation2d(WHEEL_BASE.div(2).unaryMinus(), TRACK_WIDTH.div(2).unaryMinus()));
 
-    public static final int kFrontLeftTurningCanId = 15;
-    public static final int kFrontRightTurningCanId = 6;
-    public static final int kRearLeftTurningCanId = 9;
-    public static final int kRearRightTurningCanId = 12;
+    public static final double FRONT_LEFT_ANGULAR_OFFSET = Math.PI;
+    public static final double FRONT_RIGHT_ANGULAR_OFFSET = 0;
+    public static final double REAR_LEFT_ANGULAR_OFFSET = 0;
+    public static final double REAR_RIGHT_ANGULAR_OFFSET = Math.PI;
 
-    //Encoder CAN ID values
-    public static final int kFrontLeftAbsoluteEncoderCanId = 14;
-    public static final int kFrontRightAbsoluteEncoderCanId = 5;
-    public static final int kRearLeftAbsoluteEncoderCanId = 8;
-    public static final int kRearRightAbsoluteEncoderCanId = 11;
+    public static final class ModuleConstants {
+      public static final double DRIVE_MOTOR_REDUCTION = 6.75;
+      public static final double TURNING_MOTOR_REDUCTION = 12.8;
+      public static final AngularVelocity NEO_VORTEX_FREE_SPEED = RPM.of(6784);
+      public static final Distance WHEEL_DIAMETER = Inches.of(3);
 
-    //Gyro CAN ID
-    public static final int kGyroCanID = 1;
+      public static final double DRIVING_FACTOR = WHEEL_DIAMETER.in(Meters) * Math.PI / DRIVE_MOTOR_REDUCTION;
+      public static final SparkBaseConfig DRIVE_MOTOR_CONFIG = SparkFlexConfig.Presets.REV_Vortex;
+      static {
+        DRIVE_MOTOR_CONFIG
+            .idleMode(IdleMode.kBrake);
+        DRIVE_MOTOR_CONFIG.encoder
+            .positionConversionFactor(DRIVING_FACTOR) // conversion from rotations to meters
+            .velocityConversionFactor(DRIVING_FACTOR / 60.0); // conversion from RPM to m/s
+        DRIVE_MOTOR_CONFIG.closedLoop
+            .outputRange(-1, 1)
+            .pid(0, 0, 0); // TODO: Tune kS and PID for drive.
+        DRIVE_MOTOR_CONFIG.closedLoop.feedForward
+            .kS(0);
+        DRIVE_MOTOR_CONFIG.closedLoop.maxMotion
+            .maxAcceleration(MAX_ACCELERATION.in(MetersPerSecondPerSecond))
+            .allowedProfileError(0.1); // 10 cm/s maximum velocity error (2% of a 5m/s max)
+      }
 
-    public static final boolean kGyroReversed = false;
-    public static final boolean kfieldRelative = true;
-
-    public static final SlewRateLimiter translationfilterx = new SlewRateLimiter(.75);
-    public static final SlewRateLimiter translationfiltery = new SlewRateLimiter(.75);
-    public static final SlewRateLimiter rotationfilter = new SlewRateLimiter(Math.PI);
+      public static final SparkBaseConfig TURN_MOTOR_CONFIG = SparkFlexConfig.Presets.REV_Vortex;
+      // Note: no closed loop on the turning motor since we use an non-native CANcoder
+      static {
+        TURN_MOTOR_CONFIG.idleMode(IdleMode.kBrake);
+      }
+      public static final double TURN_MOTOR_P = 0; // TODO: Tune kS and PID for turning.
+      public static final double TURN_MOTOR_I = 0;
+      public static final double TURN_MOTOR_D = 0;
+      public static final double TURN_MOTOR_KS = 0;
+    }
   }
 
-  public static final class ModuleConstants {
-    // The MAXSwerve module can be configured with one of three pinion gears: 12T,
-    // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
-    // more teeth will result in a robot that drives faster).
-    // Calculations required for driving motor conversion factors and feed forward
-    public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0952;
-    public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
-    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
-    // teeth on the bevel pinion
-    //public static final double kDrivingMotorReduction = 5.14;
-    public static final double kDrivingMotorReduction = 6.75;
-    public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
-        / kDrivingMotorReduction;
-
-    public static final double drivingFactor = (kWheelDiameterMeters * Math.PI) / kDrivingMotorReduction;
-  }
-
-  public static final class NeoMotorConstants {
-    public static final double kFreeSpeedRpm = 6784;
-  }
-
-  public static final class HopperConstants {
-    public static final int kShooterCANID = 17;
-    public static final int kIntakeCANID = 16;
-
-    public static final double kIntakeMotorSpeed = -0.30;
-    public static final double kShooterMotorSpeed = 0.80;
-
-    public static final Translation2d kBlueHubPosition = new Translation2d(4.625, 4.035);
-    public static final Translation2d kRedHubPosition = new Translation2d(11.915, 4.035);
+  public static final class AutonomousConstants {
+    public static final double PP_DRIVE_PID_P = 0; // TODO: Tune PID for autonomous path following.
+    public static final double PP_DRIVE_PID_I = 0;
+    public static final double PP_DRIVE_PID_D = 0;
+    public static final double PP_TURN_PID_P = 0;
+    public static final double PP_TURN_PID_I = 0;
+    public static final double PP_TURN_PID_D = 0;
   }
 
   public static final class ClimberConstants {
