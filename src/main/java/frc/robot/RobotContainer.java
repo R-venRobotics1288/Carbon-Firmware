@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -50,13 +51,13 @@ public class RobotContainer {
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
         () -> m_robotDrive.drive(
-            -MathUtil.applyDeadband(ShuffleValues.translationfiltery.calculate(m_driverController.getLeftY()),
-                ShuffleValues.kDriveDeadband),
-            -MathUtil.applyDeadband(ShuffleValues.translationfilterx.calculate(m_driverController.getLeftX()),
-                ShuffleValues.kDriveDeadband),
-            -MathUtil.applyDeadband(ShuffleValues.rotationfilter.calculate(m_driverController.getRightX()),
-                ShuffleValues.kDriveDeadband),
-            ShuffleValues.kfieldRelative),
+            -MathUtil.applyDeadband(DriveConstants.translationfiltery.calculate(m_driverController.getLeftY()),
+                DriveConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(DriveConstants.translationfilterx.calculate(m_driverController.getLeftX()),
+                DriveConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(DriveConstants.rotationfilter.calculate(m_driverController.getRightX()),
+                DriveConstants.kDriveDeadband),
+            DriveConstants.kfieldRelative),
         m_robotDrive));
     LimelightHelpers.SetRobotOrientation("limelight",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
@@ -116,6 +117,9 @@ public class RobotContainer {
   public void refresh_shuffleboard() {
     m_shuffle.refreshValue(m_robotDrive.m_frontLeft.getState().angle.getRadians(),
         m_robotDrive.m_frontLeft.getPosition().angle.getRadians());
+        
+    m_shuffle.refreshValue(m_robotDrive.m_frontRight.getState().angle.getRadians(),
+        m_robotDrive.m_frontRight.getPosition().angle.getRadians());
     m_field.setRobotPose(m_robotDrive.getPose());
   }
 

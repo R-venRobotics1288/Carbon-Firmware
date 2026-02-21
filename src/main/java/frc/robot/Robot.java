@@ -22,7 +22,10 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
-  private GenericEntry tmpentry;
+  private GenericEntry m_FrontLeftEntry;
+  private GenericEntry m_FrontRightEntry;
+  private GenericEntry m_RearLeftEntry;
+  private GenericEntry m_RearRightEntry;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -35,11 +38,22 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_robotContainer.m_robotDrive.resetGyro();
-    tmpentry = m_robotContainer.m_shuffle.shuffleTab
-        .add("front left encoder",
+    m_FrontLeftEntry = m_robotContainer.m_shuffle.shuffleTab
+        .add("front left encoder radians",
             m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble())
         .getEntry();
-
+    m_FrontRightEntry = m_robotContainer.m_shuffle.shuffleTab
+        .add("front right encoder radians",
+            m_robotContainer.m_robotDrive.m_frontRight.m_turningEncoder.getAbsolutePosition().getValueAsDouble())
+        .getEntry();
+    m_RearLeftEntry = m_robotContainer.m_shuffle.shuffleTab
+        .add("rear left encoder radians",
+            m_robotContainer.m_robotDrive.m_rearLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble())
+        .getEntry();
+    m_RearRightEntry = m_robotContainer.m_shuffle.shuffleTab
+        .add("rear right encoder radians",
+            m_robotContainer.m_robotDrive.m_rearRight.m_turningEncoder.getAbsolutePosition().getValueAsDouble())
+        .getEntry();
       }
       
       /**
@@ -65,7 +79,10 @@ public class Robot extends TimedRobot {
     // tmpentry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.m_turningEncoder.getAbsolutePosition().getValueAsDouble());
     
     m_robotContainer.refresh_shuffleboard();
-    tmpentry.setDouble(m_robotContainer.m_robotDrive.m_gyro.getYaw().getValueAsDouble());
+    m_FrontLeftEntry.setDouble(m_robotContainer.m_robotDrive.m_frontLeft.getAbsoluteEncoderRad()); //Returns in Radians
+    m_FrontRightEntry.setDouble(m_robotContainer.m_robotDrive.m_frontRight.getAbsoluteEncoderRad());
+    m_RearLeftEntry.setDouble(m_robotContainer.m_robotDrive.m_rearLeft.getAbsoluteEncoderRad());
+    m_RearRightEntry.setDouble(m_robotContainer.m_robotDrive.m_rearRight.getAbsoluteEncoderRad());
     //m_robotContainer.printLimeLight();
     m_robotContainer.updateOdometry();
   }

@@ -31,19 +31,19 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kFrontLeftChassisAngularOffset,
       DriveConstants.kFrontLeftAbsoluteEncoderCanId);
 
-  private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
+  public final MAXSwerveModule m_frontRight = new MAXSwerveModule(
       DriveConstants.kFrontRightDrivingCanId,
       DriveConstants.kFrontRightTurningCanId,
       DriveConstants.kFrontRightChassisAngularOffset,
       DriveConstants.kFrontRightAbsoluteEncoderCanId);
 
-  private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
+  public final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
       DriveConstants.kRearLeftDrivingCanId,
       DriveConstants.kRearLeftTurningCanId,
       DriveConstants.kRearLeftChassisAngularOffset,
       DriveConstants.kRearLeftAbsoluteEncoderCanId);
 
-  private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
+  public final MAXSwerveModule m_rearRight = new MAXSwerveModule(
       DriveConstants.kRearRightDrivingCanId,
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kRearRightChassisAngularOffset,
@@ -119,9 +119,9 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed * ShuffleValues.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeed * ShuffleValues.kMaxSpeedMetersPerSecond;
-    double rotDelivered = rot * ShuffleValues.kMaxAngularSpeed;
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
@@ -129,7 +129,7 @@ public class DriveSubsystem extends SubsystemBase {
                 Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, ShuffleValues.kMaxSpeedMetersPerSecond);
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
@@ -153,7 +153,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, ShuffleValues.kMaxSpeedMetersPerSecond);
+        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
     m_rearLeft.setDesiredState(desiredStates[2]);
