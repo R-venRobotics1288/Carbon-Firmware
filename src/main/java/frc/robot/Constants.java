@@ -25,8 +25,8 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 0.5;
-    public static final double kMaxAngularSpeed = Math.PI/4; // radians per second
+    public static final double kMaxSpeedMetersPerSecond = 1.0;
+    public static final double kMaxAngularSpeed = Math.PI; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(18);
@@ -69,9 +69,9 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
     public static final boolean kfieldRelative = true;
 
-    public static final SlewRateLimiter translationfilterx = new SlewRateLimiter(.4);
-    public static final SlewRateLimiter translationfiltery = new SlewRateLimiter(.4);
-    public static final SlewRateLimiter rotationfilter = new SlewRateLimiter((Math.PI/4));
+    public static final SlewRateLimiter translationfilterx = new SlewRateLimiter(.5);
+    public static final SlewRateLimiter translationfiltery = new SlewRateLimiter(.5);
+    public static final SlewRateLimiter rotationfilter = new SlewRateLimiter(Math.PI);
   }
 
   public static final class ModuleConstants {
@@ -80,11 +80,12 @@ public final class Constants {
     // more teeth will result in a robot that drives faster).
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.085;
+    public static final double kWheelDiameterMeters = 0.0952;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
-    public static final double kDrivingMotorReduction = 5.14;
+    //public static final double kDrivingMotorReduction = 5.14;
+    public static final double kDrivingMotorReduction = 6.75;
     public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
         / kDrivingMotorReduction;
 
