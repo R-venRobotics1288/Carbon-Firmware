@@ -43,10 +43,11 @@ public final class Constants {
 
   public static final class DriveConstants {
     public static final String LIMELIGHT_HOSTNAME = "limelight";
-    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(5);
+    // Actual max speed and turn rate are set on the Dashboard, see Dashboard.java
+    public static final LinearVelocity DEFAULT_MAX_SPEED = MetersPerSecond.of(5);
     public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(2.5);
 
-    public static final AngularVelocity MAX_TURN_RATE = RevolutionsPerSecond.of(0.85);
+    public static final AngularVelocity DEFAULT_MAX_TURN_RATE = RevolutionsPerSecond.of(0.85);
     public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = RadiansPerSecondPerSecond.of(30);
 
     public static final Distance TRACK_WIDTH = Inches.of(18);

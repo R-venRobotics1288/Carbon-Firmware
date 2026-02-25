@@ -15,6 +15,13 @@
                 "layouts": [],
                 "containers": []
             }
+        },
+        {
+            "name": "Tuning",
+            "grid_layout": {
+                "layouts": [],
+                "containers": []
+            }
         }
     ]
 }

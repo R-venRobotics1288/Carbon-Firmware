@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.utilities.Dashboard;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.commands.ClimberCommand;
@@ -25,7 +26,8 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 public class RobotContainer {
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final Dashboard dashboard = new Dashboard();
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem(dashboard);
 
   public RobotContainer() {
     RobotConfig config;

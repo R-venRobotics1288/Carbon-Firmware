@@ -14,6 +14,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.Dashboard;
 import frc.robot.utilities.LimelightHelpers;
 
 import static edu.wpi.first.units.Units.*;
@@ -21,11 +22,14 @@ import static frc.robot.Constants.CANConstants.*;
 import static frc.robot.Constants.DriveConstants.*;
 
 public class DriveSubsystem extends SubsystemBase {
+  private final Dashboard dashboard;
+
   private final Pigeon2 pigeon = new Pigeon2(PIGEON_ID);
   private final SwerveModule frontLeft = new SwerveModule(
       FRONT_LEFT_DRIVE_ID, FRONT_LEFT_TURN_ID, FRONT_LEFT_ABSOLUTE_ENCODER_ID, FRONT_LEFT_ANGULAR_OFFSET);
   private final SwerveModule frontRight = new SwerveModule(
-      FRONT_RIGHT_DRIVE_ID, FRONT_RIGHT_TURN_ID, FRONT_RIGHT_ABSOLUTE_ENCODER_ID, FRONT_RIGHT_ANGULAR_OFFSET);
+      FRONT_RIGHT_DRIVE_ID, FRONT_RIGHT_TURN_ID, FRONT_RIGHT_ABSOLUTE_ENCODER_ID,
+      FRONT_RIGHT_ANGULAR_OFFSET.in(Radians));
   private final SwerveModule rearLeft = new SwerveModule(
       REAR_LEFT_DRIVE_ID, REAR_LEFT_TURN_ID, REAR_LEFT_ABSOLUTE_ENCODER_ID, REAR_LEFT_ANGULAR_OFFSET);
   private final SwerveModule rearRight = new SwerveModule(
@@ -42,7 +46,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(
       DRIVE_KINEMATICS, new Rotation2d(pigeon.getYaw().getValue()), modulePositions, new Pose2d());
 
-  public DriveSubsystem() {
+  public DriveSubsystem(Dashboard dashboard) {
+    this.dashboard = dashboard;
     poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
   }
 
@@ -76,9 +81,9 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative whether the provided x and y speeds are field relative
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    double xSpeedDelivered = xSpeed * MAX_SPEED.in(MetersPerSecond);
-    double ySpeedDelivered = ySpeed * MAX_SPEED.in(MetersPerSecond);
-    double rotDelivered = rot * MAX_TURN_RATE.in(RadiansPerSecond);
+    double xSpeedDelivered = xSpeed * dashboard.getSpeedLimit().in(MetersPerSecond);
+    double ySpeedDelivered = ySpeed * dashboard.getSpeedLimit().in(MetersPerSecond);
+    double rotDelivered = rot * dashboard.getRotLimit().in(RadiansPerSecond);
 
     moduleStates = DRIVE_KINEMATICS.toSwerveModuleStates(
         fieldRelative
@@ -87,7 +92,7 @@ public class DriveSubsystem extends SubsystemBase {
                 new Rotation2d(getGyroscopeYaw()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        moduleStates, MAX_SPEED);
+        moduleStates, dashboard.getSpeedLimit());
     setModuleStates(moduleStates);
   }
 
@@ -98,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(ChassisSpeeds speeds) {
     moduleStates = DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, MAX_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, dashboard.getSpeedLimit());
     setModuleStates(moduleStates);
   }
 
@@ -130,7 +135,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param desiredStates The desired SwerveModule states.
    */
   private void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MAX_SPEED);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, dashboard.getSpeedLimit());
     frontLeft.setDesiredState(desiredStates[0]);
     frontRight.setDesiredState(desiredStates[1]);
     rearLeft.setDesiredState(desiredStates[2]);

@@ -15,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.RobotController;
 
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.Constants.DriveConstants.*;
@@ -33,8 +32,9 @@ public class SwerveModule {
       TURN_MOTOR_P,
       TURN_MOTOR_I,
       TURN_MOTOR_D,
-      new Constraints(MAX_TURN_RATE.in(RPM), MAX_ANGULAR_ACCELERATION.in(RPM.per(Second))));
-  private final SimpleMotorFeedforward turningFeedforward = new SimpleMotorFeedforward(TURN_MOTOR_KS, 0);
+      // Could split DEFAULT_MAX_TURN_RATE into a different constant, if divergent
+      // behvaiour desired
+      new Constraints(DEFAULT_MAX_TURN_RATE.in(RPM), MAX_ANGULAR_ACCELERATION.in(RPM.per(Second))));
   private final CANcoder turningEncoder;
   private final double chassisAngularOffset;
 
