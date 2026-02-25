@@ -15,7 +15,7 @@ public class Dashboard {
 
   public Dashboard() {
     NetworkTableInstance instance = NetworkTableInstance.getDefault();
-    NetworkTable nt = instance.getTable("CARBON");
+    NetworkTable nt = instance.getTable("carbon");
 
     speedLimitEntry = nt.getDoubleTopic("speedlimit").getEntry(DEFAULT_MAX_SPEED.in(MetersPerSecond));
     speedLimitEntry.set(DEFAULT_MAX_SPEED.in(MetersPerSecond));
@@ -26,10 +26,6 @@ public class Dashboard {
 
   public LinearVelocity getSpeedLimit() {
     return MetersPerSecond.of(speedLimitEntry.get());
-  }
-
-  public AngularVelocity getRotLimit() {
-    return RadiansPerSecond.of(rotLimitEntry.get());
   }
 
   public AngularVelocity getRotLimit() {

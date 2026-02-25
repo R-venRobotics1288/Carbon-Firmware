@@ -4,22 +4,26 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
+
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public final class Constants {
 
   public static final class HIDConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
-    public static final double DRIVER_CONTROLLER_DEADBAND = 0.05;
-    public static final double TRANSLATION_SLEW_LIMIT = 1; // TODO: Tune both slew rate limits.
-    public static final double ROTATION_SLEW_LIMIT = 0.5;
+    public static final int OPERATOR_CONTROLLER_PORT = 1;
+    public static final double DRIVER_CONTROLLER_DEADBAND = 0.09;
+    public static final double TRANSLATION_SLEW_LIMIT = 2; // TODO: Tune both slew rate limits.
+    public static final double ROTATION_SLEW_LIMIT = 0.75;
   }
 
   public static final class CANConstants {
@@ -39,6 +43,12 @@ public final class Constants {
     public static final int FRONT_RIGHT_ABSOLUTE_ENCODER_ID = 5;
     public static final int REAR_LEFT_ABSOLUTE_ENCODER_ID = 8;
     public static final int REAR_RIGHT_ABSOLUTE_ENCODER_ID = 11;
+
+    public static final int INTAKE_ID = 16;
+    public static final int SHOOTER_ID = 17;
+
+    public static final int LEFT_CLIMBER_ID = 18;
+    public static final int RIGHT_CLIMBER_ID = 19; // FIXME: may not use both motors, liason with mechanical
   }
 
   public static final class DriveConstants {
@@ -58,10 +68,10 @@ public final class Constants {
         new Translation2d(WHEEL_BASE.div(2).unaryMinus(), TRACK_WIDTH.div(2)),
         new Translation2d(WHEEL_BASE.div(2).unaryMinus(), TRACK_WIDTH.div(2).unaryMinus()));
 
-    public static final double FRONT_LEFT_ANGULAR_OFFSET = Math.PI;
-    public static final double FRONT_RIGHT_ANGULAR_OFFSET = 0;
-    public static final double REAR_LEFT_ANGULAR_OFFSET = 0;
-    public static final double REAR_RIGHT_ANGULAR_OFFSET = Math.PI;
+    public static final Angle FRONT_LEFT_ANGULAR_OFFSET = Radians.of(Math.PI);
+    public static final Angle FRONT_RIGHT_ANGULAR_OFFSET = Radians.of(0);
+    public static final Angle REAR_LEFT_ANGULAR_OFFSET = Radians.of(0);
+    public static final Angle REAR_RIGHT_ANGULAR_OFFSET = Radians.of(Math.PI);
 
     public static final class ModuleConstants {
       public static final double DRIVE_MOTOR_REDUCTION = 6.75;
@@ -79,12 +89,10 @@ public final class Constants {
             .velocityConversionFactor(DRIVING_FACTOR / 60.0); // conversion from RPM to m/s
         DRIVE_MOTOR_CONFIG.closedLoop
             .outputRange(-1, 1)
-            .pid(0, 0, 0); // TODO: Tune kS and PID for drive.
-        DRIVE_MOTOR_CONFIG.closedLoop.feedForward
-            .kS(0);
+            .pid(0.5, 0, 0);
         DRIVE_MOTOR_CONFIG.closedLoop.maxMotion
             .maxAcceleration(MAX_ACCELERATION.in(MetersPerSecondPerSecond))
-            .allowedProfileError(0.1); // 10 cm/s maximum velocity error (2% of a 5m/s max)
+            .allowedProfileError(0.08); // 8 cm/s maximum velocity error (1.6% of a 5m/s max)
       }
 
       public static final SparkBaseConfig TURN_MOTOR_CONFIG = SparkFlexConfig.Presets.REV_Vortex;
@@ -92,38 +100,58 @@ public final class Constants {
       static {
         TURN_MOTOR_CONFIG.idleMode(IdleMode.kBrake);
       }
-      public static final double TURN_MOTOR_P = 0; // TODO: Tune kS and PID for turning.
+      public static final double TURN_MOTOR_P = 0.6;
       public static final double TURN_MOTOR_I = 0;
       public static final double TURN_MOTOR_D = 0;
-      public static final double TURN_MOTOR_KS = 0;
     }
   }
 
   public static final class AutonomousConstants {
-    public static final double PP_DRIVE_PID_P = 0; // TODO: Tune PID for autonomous path following.
+    public static final double PP_DRIVE_PID_P = 4.8; // TODO: Tune PID for autonomous path following.
     public static final double PP_DRIVE_PID_I = 0;
-    public static final double PP_DRIVE_PID_D = 0;
-    public static final double PP_TURN_PID_P = 0;
+    public static final double PP_DRIVE_PID_D = 0.15;
+    public static final double PP_TURN_PID_P = 4.3;
     public static final double PP_TURN_PID_I = 0;
-    public static final double PP_TURN_PID_D = 0;
+    public static final double PP_TURN_PID_D = 0.15;
+  }
+
+  public static final class HopperConstants {
+    // speeds are in motor power %, we could also use the closed loop controller to
+    // setpoint to a desired RPM velocity
+    public static final double INTAKE_SPEED = -0.30;
+    public static final double SHOOTER_SPEED = 0.80;
+
+    public static final SparkBaseConfig INTAKE_MOTOR_CONFIG = SparkFlexConfig.Presets.REV_Vortex;
+    static {
+      INTAKE_MOTOR_CONFIG.idleMode(IdleMode.kCoast);
+    }
+    public static final SparkBaseConfig SHOOTER_MOTOR_CONFIG = SparkFlexConfig.Presets.REV_Vortex;
+    static {
+      SHOOTER_MOTOR_CONFIG.idleMode(IdleMode.kCoast);
+    }
+
+    public static final Translation2d BLUE_HUB_POSITION = new Translation2d(4.625, 4.035);
+    public static final Translation2d RED_HUB_POSITION = new Translation2d(11.915, 4.035);
   }
 
   public static final class ClimberConstants {
-    public static final int kLeftCANId = 18;
-    public static final int kRightCANId = 19; //may not use one motor
+    public static final double CLIMBER_GEAR_RATIO = 1.0; // FIXME: change later, check with mechanical
+    public static final SparkBaseConfig CLIMBER_MOTOR_CONFIG = SparkMaxConfig.Presets.REV_Vortex;
+    static {
+      CLIMBER_MOTOR_CONFIG
+          .idleMode(IdleMode.kBrake);
+      CLIMBER_MOTOR_CONFIG.encoder
+          .positionConversionFactor(CLIMBER_GEAR_RATIO);
+      CLIMBER_MOTOR_CONFIG.closedLoop
+          .outputRange(-0.4, 0.4)
+          .pid(1.0, 0.0, 0.0); // TODO: tune closed loop PID, output range, and maxMotion parameters
+      CLIMBER_MOTOR_CONFIG.closedLoop.maxMotion
+          .cruiseVelocity(1.0) // RPS
+          .maxAcceleration(1.0); // RPSPS
+    }
 
-    public static final double kGearRatio = 1.0; //change later
-
-    public static final double kMaxMotorSpeed = 1.0;
-
-    public static final double kP = 1.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
-
-    public static final double kPositionTolerance = 0.05; //in meters
-
-    public static final double kDesiredPosZero = 0.0;
-    public static final double kRetractedDesiredPos = 0.05;
-    public static final double kDesiredPosOne = 0.3; //in meters, should be changed
+    public static final Angle CLIMBER_ZERO_POSITION = Rotations.of(0); // TODO: set positions
+    public static final Angle CLIMBER_RETRACTED_POSITON = Rotations.of(1);
+    public static final Angle CLIMBER_POSITION_ONE = Rotations.of(12);
   }
 }

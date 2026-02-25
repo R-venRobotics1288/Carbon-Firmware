@@ -8,15 +8,16 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import frc.robot.utilities.Elastic;
 
 public class Robot extends TimedRobot {
-  private final RobotContainer m_robotContainer;
+  private final RobotContainer robotContainer;
 
-  private Command m_autonomousCommand;
+  private Command autonomousCommand;
 
   public Robot() {
-    m_robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer();
 
     DataLogManager.start();
     URCL.start();
@@ -43,10 +44,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    autonomousCommand = robotContainer.getAutonomousCommand();
 
-    if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
+    if (autonomousCommand != null) {
+      CommandScheduler.getInstance().schedule(autonomousCommand);
     }
 
     Elastic.selectTab("Autonomous");
@@ -62,11 +63,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
     }
 
-    Elastic.selectTab("Teleop");
+    Elastic.selectTab("Teleoperated");
   }
 
   @Override

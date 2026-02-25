@@ -2,6 +2,7 @@ package frc.robot;
 
 import static frc.robot.Constants.AutonomousConstants.*;
 import static frc.robot.Constants.HIDConstants.*;
+import static frc.robot.Constants.ClimberConstants.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -10,14 +11,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.utilities.Dashboard;
-import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.commands.ClimberCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.ShootCommand;
-import frc.robot.commands.VariableShootCommand;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -25,9 +18,20 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import frc.robot.utilities.Dashboard;
+
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+
+import frc.robot.commands.VariableShootCommand;
+
 public class RobotContainer {
   private final Dashboard dashboard = new Dashboard();
+
   private final DriveSubsystem driveSubsystem = new DriveSubsystem(dashboard);
+  private final HopperSubsystem hopperSubsystem = new HopperSubsystem();
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
   public RobotContainer() {
     RobotConfig config;
@@ -59,30 +63,18 @@ public class RobotContainer {
         driveSubsystem);
 
     configureBindings();
-    m_robotDrive.setDefaultCommand(new RunCommand(
-        () -> m_robotDrive.drive(
-            -MathUtil.applyDeadband(DriveConstants.translationfiltery.calculate(m_driverController.getLeftY()),
-                DriveConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(DriveConstants.translationfilterx.calculate(m_driverController.getLeftX()),
-                DriveConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(DriveConstants.rotationfilter.calculate(m_driverController.getRightX()),
-                DriveConstants.kDriveDeadband),
-            DriveConstants.kfieldRelative),
-        m_robotDrive));
-    LimelightHelpers.SetRobotOrientation("limelight",
-        m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
-    m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-    m_robotDrive.m_poseEstimator.addVisionMeasurement(
-        limelightMeasurement.pose,
-        limelightMeasurement.timestampSeconds);
-    SmartDashboard.putData("Field", m_field);
   }
 
   private final CommandXboxController driverController = new CommandXboxController(DRIVER_CONTROLLER_PORT);
+  private final CommandXboxController operatorController = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
+
   private final SlewRateLimiter xSlewRateLimiter = new SlewRateLimiter(TRANSLATION_SLEW_LIMIT);
   private final SlewRateLimiter ySlewRateLimiter = new SlewRateLimiter(TRANSLATION_SLEW_LIMIT);
   private final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(ROTATION_SLEW_LIMIT);
+
+  private final Command climbCommand = Commands.sequence(
+      climberSubsystem.climbCommand(CLIMBER_POSITION_ONE, true),
+      climberSubsystem.climbCommand(CLIMBER_RETRACTED_POSITON, true));
 
   private void configureBindings() {
     // Bind driving to the default (continuously ran) command of the driveSubsystem.
@@ -100,6 +92,12 @@ public class RobotContainer {
 
     driverController.start().onTrue(Commands.runOnce(driveSubsystem::zeroGyroscope));
     driverController.x().onTrue(driveSubsystem.setXCommand);
+
+    operatorController.rightTrigger().onTrue(new VariableShootCommand(hopperSubsystem, driveSubsystem));
+    operatorController.x().onTrue(hopperSubsystem.simpleShootCommand());
+    operatorController.rightBumper().onTrue(climbCommand);
+    operatorController.leftBumper().onTrue(Commands.runOnce(climbCommand::cancel));
+    operatorController.a().onTrue(hopperSubsystem.intakeCommand());
   }
 
   public Command getAutonomousCommand() {

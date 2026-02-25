@@ -1,5 +1,9 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.CANConstants.*;
+import static frc.robot.Constants.DriveConstants.*;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.VecBuilder;
@@ -14,26 +18,23 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.utilities.Dashboard;
 import frc.robot.utilities.LimelightHelpers;
-
-import static edu.wpi.first.units.Units.*;
-import static frc.robot.Constants.CANConstants.*;
-import static frc.robot.Constants.DriveConstants.*;
 
 public class DriveSubsystem extends SubsystemBase {
   private final Dashboard dashboard;
 
   private final Pigeon2 pigeon = new Pigeon2(PIGEON_ID);
   private final SwerveModule frontLeft = new SwerveModule(
-      FRONT_LEFT_DRIVE_ID, FRONT_LEFT_TURN_ID, FRONT_LEFT_ABSOLUTE_ENCODER_ID, FRONT_LEFT_ANGULAR_OFFSET);
+      FRONT_LEFT_DRIVE_ID, FRONT_LEFT_TURN_ID, FRONT_LEFT_ABSOLUTE_ENCODER_ID, FRONT_LEFT_ANGULAR_OFFSET.in(Radians));
   private final SwerveModule frontRight = new SwerveModule(
       FRONT_RIGHT_DRIVE_ID, FRONT_RIGHT_TURN_ID, FRONT_RIGHT_ABSOLUTE_ENCODER_ID,
       FRONT_RIGHT_ANGULAR_OFFSET.in(Radians));
   private final SwerveModule rearLeft = new SwerveModule(
-      REAR_LEFT_DRIVE_ID, REAR_LEFT_TURN_ID, REAR_LEFT_ABSOLUTE_ENCODER_ID, REAR_LEFT_ANGULAR_OFFSET);
+      REAR_LEFT_DRIVE_ID, REAR_LEFT_TURN_ID, REAR_LEFT_ABSOLUTE_ENCODER_ID, REAR_LEFT_ANGULAR_OFFSET.in(Radians));
   private final SwerveModule rearRight = new SwerveModule(
-      REAR_RIGHT_DRIVE_ID, REAR_RIGHT_TURN_ID, REAR_RIGHT_ABSOLUTE_ENCODER_ID, REAR_RIGHT_ANGULAR_OFFSET);
+      REAR_RIGHT_DRIVE_ID, REAR_RIGHT_TURN_ID, REAR_RIGHT_ABSOLUTE_ENCODER_ID, REAR_RIGHT_ANGULAR_OFFSET.in(Radians));
 
   private SwerveModuleState[] moduleStates = DRIVE_KINEMATICS.toSwerveModuleStates(new ChassisSpeeds());
   private final SwerveModulePosition[] modulePositions = new SwerveModulePosition[] {

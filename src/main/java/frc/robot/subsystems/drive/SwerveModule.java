@@ -1,5 +1,9 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.DriveConstants.ModuleConstants.*;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -9,16 +13,11 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
-
-import static edu.wpi.first.units.Units.*;
-import static frc.robot.Constants.DriveConstants.*;
-import static frc.robot.Constants.DriveConstants.ModuleConstants.*;
 
 /**
  * Represents one physical Swerve Module.
@@ -84,9 +83,7 @@ public class SwerveModule {
         ControlType.kMAXMotionVelocityControl);
 
     turningController
-        .set(turningControlLoop.calculate(getAbsoluteEncoder().in(Rotations), desiredState.angle.getRotations())
-            + turningFeedforward.calculate(turningControlLoop.getSetpoint().velocity)
-                / RobotController.getBatteryVoltage());
+        .set(turningControlLoop.calculate(getAbsoluteEncoder().in(Rotations), desiredState.angle.getRotations()));
 
     this.desiredState = desiredState;
   }
