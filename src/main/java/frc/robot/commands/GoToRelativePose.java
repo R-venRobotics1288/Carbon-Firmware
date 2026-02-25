@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -18,6 +17,7 @@ public class GoToRelativePose extends Command {
     private final XboxController m_controller;
     private final double m_relativeX;
     private final double m_relativeY;
+    private final double m_relativeTheta;
 
     private Pose2d m_targetPose;
 
@@ -33,15 +33,16 @@ public class GoToRelativePose extends Command {
      * @param relativeX The desired relative movement in the X direction (forward/backward).
      * @param relativeY The desired relative movement in the Y direction (left/right).
      */
-    public GoToRelativePose(DriveSubsystem driveSubsystem, XboxController controller, double relativeX, double relativeY) {
+    public GoToRelativePose(DriveSubsystem driveSubsystem, XboxController controller, double relativeX, double relativeY, double relativeTheta) {
         this.m_driveSubsystem = driveSubsystem;
         this.m_controller = controller;
         this.m_relativeX = relativeX;
         this.m_relativeY = relativeY;
+        this.m_relativeTheta = relativeTheta;
 
-        m_xController = new PIDController(AutoConstants.kPXController, 0, 0);
-        m_yController = new PIDController(AutoConstants.kPYController, 0, 0);
-        m_thetaController = new PIDController(AutoConstants.kPThetaController, 0, 0);
+        m_xController = new PIDController(0, 0, 0);
+        m_yController = new PIDController(0, 0, 0);
+        m_thetaController = new PIDController(0, 0, 0);
         m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         addRequirements(m_driveSubsystem);
@@ -51,7 +52,7 @@ public class GoToRelativePose extends Command {
     public void initialize() {
         // Get the current pose and calculate the target pose by applying the relative transform.
         Pose2d currentPose = m_driveSubsystem.getPose();
-        Transform2d relativeTransform = new Transform2d(new Translation2d(m_relativeX, m_relativeY), new Rotation2d());
+        Transform2d relativeTransform = new Transform2d(new Translation2d(m_relativeX, m_relativeY), new Rotation2d(m_relativeTheta));
         m_targetPose = currentPose.plus(relativeTransform);
 
         // Set the tolerance for the PID controllers
@@ -70,13 +71,13 @@ public class GoToRelativePose extends Command {
         double thetaSpeed = m_thetaController.calculate(currentPose.getRotation().getRadians(), m_targetPose.getRotation().getRadians());
 
         // Clamp the output of the PID controllers to the robot's maximum speeds
-        xSpeed = MathUtil.clamp(xSpeed, -AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxSpeedMetersPerSecond);
-        ySpeed = MathUtil.clamp(ySpeed, -AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxSpeedMetersPerSecond);
-        thetaSpeed = MathUtil.clamp(thetaSpeed, -AutoConstants.kMaxAngularSpeedRadiansPerSecond, AutoConstants.kMaxAngularSpeedRadiansPerSecond);
+        xSpeed = MathUtil.clamp(xSpeed, -DriveConstants.kMaxSpeedMetersPerSecond, DriveConstants.kMaxSpeedMetersPerSecond);
+        ySpeed = MathUtil.clamp(ySpeed, -DriveConstants.kMaxSpeedMetersPerSecond, DriveConstants.kMaxSpeedMetersPerSecond);
+        thetaSpeed = MathUtil.clamp(thetaSpeed, -DriveConstants.kMaxAngularSpeed, DriveConstants.kMaxAngularSpeed);
 
         // Create ChassisSpeeds from the calculated speeds and pass to the subsystem
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, thetaSpeed, m_driveSubsystem.getPose().getRotation());
-        m_driveSubsystem.setChassisSpeeds(chassisSpeeds);
+        m_driveSubsystem.driveRobotRelative(chassisSpeeds);
     }
 
     @Override

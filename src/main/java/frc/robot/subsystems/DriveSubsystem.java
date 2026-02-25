@@ -181,8 +181,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds speeds) {
-    System.out.println(speeds.vxMetersPerSecond);
-    System.out.println(speeds.vyMetersPerSecond);
+    // System.out.println(speeds.vxMetersPerSecond);
+    // System.out.println(speeds.vyMetersPerSecond);
     m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
     // SwerveDriveKinematics.desaturateWheelSpeeds(m_swerveModuleStates,
     // ShuffleValues.kMaxSpeedMetersPerSecond);
@@ -222,6 +222,13 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.resetEncoders();
     m_frontRight.resetEncoders();
     m_rearRight.resetEncoders();
+  }
+
+  public void stop() {
+    m_frontLeft.stop();
+    m_frontRight.stop();
+    m_rearLeft.stop();
+    m_rearRight.stop();
   }
 
   /** Zeroes the heading of the robot. */

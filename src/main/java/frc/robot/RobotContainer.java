@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.GoToRelativePose;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -41,6 +42,9 @@ public class RobotContainer {
 
   XboxController m_driverController = new XboxController(0);
   Trigger startButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
+  Trigger rotateButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
+  Trigger forwardButton = new JoystickButton(m_driverController, XboxController.Button.kB.value);
+  Trigger leftButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
 
   public Shuffle m_shuffle = new Shuffle();
 
@@ -92,7 +96,19 @@ public class RobotContainer {
     startButton.onTrue(Commands.runOnce(() -> {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
-  }
+
+    rotateButton.onTrue(Commands.runOnce(() -> {
+      new GoToRelativePose(m_robotDrive, m_driverController, 0, 0, Math.PI/2);
+    }, m_robotDrive));
+  
+    forwardButton.onTrue(Commands.runOnce(() -> {
+      new GoToRelativePose(m_robotDrive, m_driverController, 1, 0, 0);
+    }, m_robotDrive));
+
+    leftButton.onTrue(Commands.runOnce(() -> {
+      new GoToRelativePose(m_robotDrive, m_driverController, 0, 1, 0);
+    }, m_robotDrive));
+}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
