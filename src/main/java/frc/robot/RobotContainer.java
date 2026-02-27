@@ -97,17 +97,11 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
 
-    rotateButton.onTrue(Commands.runOnce(() -> {
-      new GoToRelativePose(m_robotDrive, m_driverController, 0, 0, Math.PI/2);
-    }, m_robotDrive));
+    rotateButton.onTrue(new GoToRelativePose(m_robotDrive, m_driverController, 0, 0, Math.PI/2));
   
-    forwardButton.onTrue(Commands.runOnce(() -> {
-      new GoToRelativePose(m_robotDrive, m_driverController, 1, 0, 0);
-    }, m_robotDrive));
+    forwardButton.onTrue(new GoToRelativePose(m_robotDrive, m_driverController, 1, 0, 0));
 
-    leftButton.onTrue(Commands.runOnce(() -> {
-      new GoToRelativePose(m_robotDrive, m_driverController, 0, 1, 0);
-    }, m_robotDrive));
+    leftButton.onTrue(new GoToRelativePose(m_robotDrive, m_driverController, 0, 1, 0));
 }
 
   /**

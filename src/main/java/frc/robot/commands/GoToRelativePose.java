@@ -40,9 +40,9 @@ public class GoToRelativePose extends Command {
         this.m_relativeY = relativeY;
         this.m_relativeTheta = relativeTheta;
 
-        m_xController = new PIDController(0, 0, 0);
-        m_yController = new PIDController(0, 0, 0);
-        m_thetaController = new PIDController(0, 0, 0);
+        m_xController = new PIDController(7.5, 0, 0);
+        m_yController = new PIDController(7.5, 0, 0);
+        m_thetaController = new PIDController(7.2, 0, 0.01);
         m_thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         addRequirements(m_driveSubsystem);
@@ -56,9 +56,9 @@ public class GoToRelativePose extends Command {
         m_targetPose = currentPose.plus(relativeTransform);
 
         // Set the tolerance for the PID controllers
-        m_xController.setTolerance(0.05); // 5 cm
-        m_yController.setTolerance(0.05); // 5 cm
-        m_thetaController.setTolerance(Math.toRadians(2)); // 2 degrees
+        m_xController.setTolerance(0.03); // 5 cm
+        m_yController.setTolerance(0.03); // 5 cm
+        m_thetaController.setTolerance(Math.toRadians(1.5)); // 2 degrees
     }
 
     @Override
