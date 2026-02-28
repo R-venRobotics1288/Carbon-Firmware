@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.GoToRelativePose;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -96,12 +95,6 @@ public class RobotContainer {
     startButton.onTrue(Commands.runOnce(() -> {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
-
-    rotateButton.onTrue(new GoToRelativePose(m_robotDrive, m_driverController, 0, 0, Math.PI/2));
-  
-    forwardButton.onTrue(new GoToRelativePose(m_robotDrive, m_driverController, 1, 0, 0));
-
-    leftButton.onTrue(new GoToRelativePose(m_robotDrive, m_driverController, 0, 1, 0));
 }
 
   /**
