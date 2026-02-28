@@ -82,7 +82,7 @@ public class GoToRelativePose extends Command {
 
     @Override
     public boolean isFinished() {
-        // The command is finished when the robot is at the setpoint.
+        // The command is finished when the robot is at the setpoint
         return m_xController.atSetpoint() && m_yController.atSetpoint() && m_thetaController.atSetpoint();
     }
 
