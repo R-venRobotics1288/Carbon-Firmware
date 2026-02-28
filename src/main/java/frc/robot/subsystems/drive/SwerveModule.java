@@ -23,11 +23,11 @@ import edu.wpi.first.units.measure.Angle;
  * Represents one physical Swerve Module.
  */
 public class SwerveModule {
-  private final SparkFlex drivingController;
+  private final SparkFlex drivingMotor;
   private final RelativeEncoder drivingEncoder;
 
-  private final SparkFlex turningController;
-  private final ProfiledPIDController turningControlLoop = new ProfiledPIDController(
+  private final SparkFlex turningMotor;
+  private final ProfiledPIDController turningController = new ProfiledPIDController(
       TURN_MOTOR_P,
       TURN_MOTOR_I,
       TURN_MOTOR_D,
@@ -37,19 +37,21 @@ public class SwerveModule {
   private final CANcoder turningEncoder;
   private final double chassisAngularOffset;
 
-  private SwerveModuleState desiredState = new SwerveModuleState();
+  private SwerveModuleState currentDesiredState = new SwerveModuleState();
 
   public SwerveModule(int drivingMotorID, int turningMotorID, int absoluteEncoderID, double chassisAngularOffset) {
-    drivingController = new SparkFlex(drivingMotorID, MotorType.kBrushless);
-    drivingController.configureAsync(DRIVE_MOTOR_CONFIG, ResetMode.kResetSafeParameters,
+    drivingMotor = new SparkFlex(drivingMotorID, MotorType.kBrushless);
+    drivingMotor.configureAsync(DRIVE_MOTOR_CONFIG, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-    drivingEncoder = drivingController.getEncoder();
+    drivingEncoder = drivingMotor.getEncoder();
     drivingEncoder.setPosition(0);
 
-    turningController = new SparkFlex(turningMotorID, MotorType.kBrushless);
-    turningController.configureAsync(TURN_MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    turningMotor = new SparkFlex(turningMotorID, MotorType.kBrushless);
+    turningMotor.configureAsync(TURN_MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    turningController.enableContinuousInput(-1.0, 1.0);
+    turningController.setTolerance(0.05);
     turningEncoder = new CANcoder(absoluteEncoderID);
-    desiredState.angle = new Rotation2d(getAbsoluteEncoder());
+    currentDesiredState.angle = new Rotation2d(getAbsoluteEncoder());
 
     this.chassisAngularOffset = chassisAngularOffset;
   }
@@ -60,7 +62,7 @@ public class SwerveModule {
 
   public void resetControllers() {
     drivingEncoder.setPosition(0);
-    turningControlLoop.reset(getAbsoluteEncoder().in(Rotations));
+    turningController.reset(getAbsoluteEncoder().in(Rotations));
   }
 
   public SwerveModulePosition getModulePosition() {
@@ -75,16 +77,17 @@ public class SwerveModule {
         new Rotation2d(getAbsoluteEncoder()).minus(Rotation2d.fromRadians(chassisAngularOffset)));
   }
 
-  public void setDesiredState(SwerveModuleState desiredState) {
-    desiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(chassisAngularOffset));
-    desiredState.optimize(new Rotation2d(getAbsoluteEncoder()));
+  public void setCurrentDesiredState(SwerveModuleState desiredState) {
+    currentDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
+    currentDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(chassisAngularOffset));
+    currentDesiredState.optimize(new Rotation2d(getAbsoluteEncoder()));
 
-    drivingController.getClosedLoopController().setSetpoint(desiredState.speedMetersPerSecond,
+    drivingMotor.getClosedLoopController().setSetpoint(
+        currentDesiredState.speedMetersPerSecond,
         ControlType.kMAXMotionVelocityControl);
 
-    turningController
-        .set(turningControlLoop.calculate(getAbsoluteEncoder().in(Rotations), desiredState.angle.getRotations()));
-
-    this.desiredState = desiredState;
+    turningMotor.set(turningController.calculate(
+        getAbsoluteEncoder().in(Rotations),
+        currentDesiredState.angle.getRotations()));
   }
 }

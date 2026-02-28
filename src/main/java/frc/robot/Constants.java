@@ -22,8 +22,8 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
     public static final double DRIVER_CONTROLLER_DEADBAND = 0.09;
-    public static final double TRANSLATION_SLEW_LIMIT = 2; // TODO: Tune both slew rate limits.
-    public static final double ROTATION_SLEW_LIMIT = 0.75;
+    public static final double TRANSLATION_SLEW_LIMIT = 2;
+    public static final double ROTATION_SLEW_LIMIT = 1;
   }
 
   public static final class CANConstants {
@@ -55,10 +55,10 @@ public final class Constants {
     public static final String LIMELIGHT_HOSTNAME = "limelight";
     // Actual max speed and turn rate are set on the Dashboard, see Dashboard.java
     public static final LinearVelocity DEFAULT_MAX_SPEED = MetersPerSecond.of(5);
-    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(2.5);
+    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
 
     public static final AngularVelocity DEFAULT_MAX_TURN_RATE = RevolutionsPerSecond.of(0.85);
-    public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = RadiansPerSecondPerSecond.of(30);
+    public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = RadiansPerSecondPerSecond.of(35);
 
     public static final Distance TRACK_WIDTH = Inches.of(18);
     public static final Distance WHEEL_BASE = Inches.of(24);
@@ -92,7 +92,7 @@ public final class Constants {
             .pid(0.5, 0, 0);
         DRIVE_MOTOR_CONFIG.closedLoop.maxMotion
             .maxAcceleration(MAX_ACCELERATION.in(MetersPerSecondPerSecond))
-            .allowedProfileError(0.08); // 8 cm/s maximum velocity error (1.6% of a 5m/s max)
+            .allowedProfileError(0.05); // 5 cm/s maximum velocity error (1% of a 5m/s max)
       }
 
       public static final SparkBaseConfig TURN_MOTOR_CONFIG = SparkFlexConfig.Presets.REV_Vortex;
@@ -100,7 +100,7 @@ public final class Constants {
       static {
         TURN_MOTOR_CONFIG.idleMode(IdleMode.kBrake);
       }
-      public static final double TURN_MOTOR_P = 0.6;
+      public static final double TURN_MOTOR_P = 0.15;
       public static final double TURN_MOTOR_I = 0;
       public static final double TURN_MOTOR_D = 0;
     }

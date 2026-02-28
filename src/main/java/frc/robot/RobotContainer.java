@@ -30,8 +30,8 @@ public class RobotContainer {
   private final Dashboard dashboard = new Dashboard();
 
   private final DriveSubsystem driveSubsystem = new DriveSubsystem(dashboard);
-  private final HopperSubsystem hopperSubsystem = new HopperSubsystem();
-  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  //private final HopperSubsystem hopperSubsystem = new HopperSubsystem();
+  //private final ClimberSubsystem climberSubsystem = new ClimberSubsystem();
 
   public RobotContainer() {
     RobotConfig config;
@@ -72,9 +72,9 @@ public class RobotContainer {
   private final SlewRateLimiter ySlewRateLimiter = new SlewRateLimiter(TRANSLATION_SLEW_LIMIT);
   private final SlewRateLimiter rotationSlewRateLimiter = new SlewRateLimiter(ROTATION_SLEW_LIMIT);
 
-  private final Command climbCommand = Commands.sequence(
-      climberSubsystem.climbCommand(CLIMBER_POSITION_ONE, true),
-      climberSubsystem.climbCommand(CLIMBER_RETRACTED_POSITON, true));
+  //private final Command climbCommand = Commands.sequence(
+  //    climberSubsystem.climbCommand(CLIMBER_POSITION_ONE, true),
+  //    climberSubsystem.climbCommand(CLIMBER_RETRACTED_POSITON, true));
 
   private void configureBindings() {
     // Bind driving to the default (continuously ran) command of the driveSubsystem.
@@ -93,11 +93,11 @@ public class RobotContainer {
     driverController.start().onTrue(Commands.runOnce(driveSubsystem::zeroGyroscope));
     driverController.x().onTrue(driveSubsystem.setXCommand);
 
-    operatorController.rightTrigger().onTrue(new VariableShootCommand(hopperSubsystem, driveSubsystem));
-    operatorController.x().onTrue(hopperSubsystem.simpleShootCommand());
-    operatorController.rightBumper().onTrue(climbCommand);
-    operatorController.leftBumper().onTrue(Commands.runOnce(climbCommand::cancel));
-    operatorController.a().onTrue(hopperSubsystem.intakeCommand());
+    //operatorController.rightTrigger().onTrue(new VariableShootCommand(hopperSubsystem, driveSubsystem));
+    //operatorController.x().onTrue(hopperSubsystem.simpleShootCommand());
+    //operatorController.rightBumper().onTrue(climbCommand);
+    //operatorController.leftBumper().onTrue(Commands.runOnce(climbCommand::cancel));
+    //operatorController.a().onTrue(hopperSubsystem.intakeCommand());
   }
 
   public Command getAutonomousCommand() {

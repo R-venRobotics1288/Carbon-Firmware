@@ -92,8 +92,6 @@ public class DriveSubsystem extends SubsystemBase {
                 xSpeedDelivered, ySpeedDelivered, rotDelivered,
                 new Rotation2d(getGyroscopeYaw()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        moduleStates, dashboard.getSpeedLimit());
     setModuleStates(moduleStates);
   }
 
@@ -111,11 +109,11 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
-  public Command setXCommand = Commands.runOnce(() -> {
-    frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+  public Command setXCommand = Commands.run(() -> {
+    frontLeft.setCurrentDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+    frontRight.setCurrentDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+    rearLeft.setCurrentDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+    rearRight.setCurrentDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }, this);
 
   public Pose2d getEstimatedRobotPose() {
@@ -137,10 +135,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   private void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, dashboard.getSpeedLimit());
-    frontLeft.setDesiredState(desiredStates[0]);
-    frontRight.setDesiredState(desiredStates[1]);
-    rearLeft.setDesiredState(desiredStates[2]);
-    rearRight.setDesiredState(desiredStates[3]);
+    frontLeft.setCurrentDesiredState(desiredStates[0]);
+    frontRight.setCurrentDesiredState(desiredStates[1]);
+    rearLeft.setCurrentDesiredState(desiredStates[2]);
+    rearRight.setCurrentDesiredState(desiredStates[3]);
   }
 
   /**
