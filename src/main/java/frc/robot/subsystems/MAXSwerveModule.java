@@ -66,6 +66,11 @@ public class MAXSwerveModule {
     m_drivingEncoder.setPosition(0);
   }
 
+  public void stop() {
+    this.m_turningSpark.stopMotor();
+    this.m_drivingSpark.stopMotor();
+  }
+
   public double getAbsoluteEncoderRad() {
 		return (m_turningEncoder.getAbsolutePosition().getValueAsDouble()) * (2 * Math.PI);
 	}

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -24,14 +25,14 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 0.5;
+    public static final double kMaxSpeedMetersPerSecond = 1.25;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(18);
     // Distance between centers of right and left wheels on robot
     public static final double kWheelBase = Units.inchesToMeters(24);
-    public static final double kDriveDeadband = 0.05;
+    public static final double kDriveDeadband = 0.09;
     // Distance between front and rear wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -66,6 +67,11 @@ public final class Constants {
     public static final int kGyroCanID = 1;
 
     public static final boolean kGyroReversed = false;
+    public static final boolean kfieldRelative = true;
+
+    public static final SlewRateLimiter translationfilterx = new SlewRateLimiter(.75);
+    public static final SlewRateLimiter translationfiltery = new SlewRateLimiter(.75);
+    public static final SlewRateLimiter rotationfilter = new SlewRateLimiter(Math.PI);
   }
 
   public static final class ModuleConstants {
@@ -74,11 +80,12 @@ public final class Constants {
     // more teeth will result in a robot that drives faster).
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.085;
+    public static final double kWheelDiameterMeters = 0.0952;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
-    public static final double kDrivingMotorReduction = 5.14;
+    //public static final double kDrivingMotorReduction = 5.14;
+    public static final double kDrivingMotorReduction = 6.75;
     public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
         / kDrivingMotorReduction;
 
@@ -87,5 +94,35 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 6784;
+  }
+
+  public static final class HopperConstants {
+    public static final int kShooterCANID = 17;
+    public static final int kIntakeCANID = 16;
+
+    public static final double kIntakeMotorSpeed = -0.30;
+    public static final double kShooterMotorSpeed = 0.80;
+
+    public static final Translation2d kBlueHubPosition = new Translation2d(4.625, 4.035);
+    public static final Translation2d kRedHubPosition = new Translation2d(11.915, 4.035);
+  }
+
+  public static final class ClimberConstants {
+    public static final int kLeftCANId = 18;
+    public static final int kRightCANId = 19; //may not use one motor
+
+    public static final double kGearRatio = 1.0; //change later
+
+    public static final double kMaxMotorSpeed = 1.0;
+
+    public static final double kP = 1.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final double kPositionTolerance = 0.05; //in meters
+
+    public static final double kDesiredPosZero = 0.0;
+    public static final double kRetractedDesiredPos = 0.05;
+    public static final double kDesiredPosOne = 0.3; //in meters, should be changed
   }
 }

@@ -3,8 +3,10 @@ package frc.robot;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public final class Configs {
@@ -17,8 +19,8 @@ public final class Configs {
             double drivingFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
                     / ModuleConstants.kDrivingMotorReduction;
             double turningFactor = 2 * Math.PI;
-            double nominalVoltage = 12.0;
-            double drivingVelocityFeedForward = nominalVoltage / ModuleConstants.kDriveWheelFreeSpeedRps;
+            //double nominalVoltage = 12.0;
+            //double drivingVelocityFeedForward = nominalVoltage / ModuleConstants.kDriveWheelFreeSpeedRps;
 
             drivingConfig
                     .idleMode(IdleMode.kBrake)
@@ -57,6 +59,35 @@ public final class Configs {
                     // longer route.
                     .positionWrappingEnabled(true)
                     .positionWrappingInputRange(0, turningFactor);
+        }
+
+    }
+
+    public static final class HopperConfigs {
+        public static final SparkFlexConfig shooterConfig = new SparkFlexConfig();
+        public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
+
+        static {
+                shooterConfig 
+                        .idleMode(IdleMode.kCoast)
+                        .smartCurrentLimit(80);
+                
+                intakeConfig
+                        .idleMode(IdleMode.kCoast) //maybe brake mode
+                        .smartCurrentLimit(80);
+        }
+    }
+
+    public static final class ClimberConfig {
+        public static final SparkMaxConfig motorConfig = new SparkMaxConfig();
+        
+        static {
+                motorConfig
+                        .idleMode(IdleMode.kBrake)
+                        .smartCurrentLimit(80);
+                        
+                motorConfig.encoder
+                        .positionConversionFactor(ClimberConstants.kGearRatio);
         }
     }
 }
