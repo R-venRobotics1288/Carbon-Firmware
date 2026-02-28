@@ -1,40 +1,40 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.HopperConstants.*;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.HopperConstants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 
 public class VariableShootCommand extends Command {
-    private HopperSubsystem m_hopperSubsystem;
-    private DriveSubsystem m_driveSubsystem;
-    private double m_distance;
-    private double m_power;
-    private final Translation2d kHubPosition;
+  private final Translation2d HUB_POSITION;
 
-    public VariableShootCommand(HopperSubsystem hopperSubsystem, DriveSubsystem driveSubsystem) {
-        m_hopperSubsystem = hopperSubsystem;
-        m_driveSubsystem = driveSubsystem;
-        kHubPosition = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? HopperConstants.kRedHubPosition : HopperConstants.kBlueHubPosition;
-        addRequirements(hopperSubsystem);
-    }
+  private final HopperSubsystem hopperSubsystem;
+  private final DriveSubsystem driveSubsystem;
 
-    @Override
-    public void initialize() {
-        
-    }
+  private double distance;
+  private double power;
 
-    @Override
-    public void execute() {
-        m_distance = m_driveSubsystem.getPose().getTranslation().getDistance(kHubPosition);
-        m_power = m_hopperSubsystem.getPower(m_distance);
-        m_hopperSubsystem.setShooterMotorSpeed(m_power);
-    }
+  public VariableShootCommand(HopperSubsystem hopperSubsystem, DriveSubsystem driveSubsystem) {
+    this.hopperSubsystem = hopperSubsystem;
+    this.driveSubsystem = driveSubsystem;
+    HUB_POSITION = DriverStation.getAlliance().get() == Alliance.Red ? RED_HUB_POSITION : BLUE_HUB_POSITION;
+    addRequirements(hopperSubsystem);
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-        m_hopperSubsystem.stopShooter();
-    }
+  @Override
+  public void execute() {
+    distance = driveSubsystem.getEstimatedRobotPose().getTranslation().getDistance(HUB_POSITION);
+    power = hopperSubsystem.getPower(distance);
+    hopperSubsystem.setMotorSpeeds(-INTAKE_SPEED, power);
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    hopperSubsystem.stopIntake();
+    hopperSubsystem.stopShooter();
+  }
 }
