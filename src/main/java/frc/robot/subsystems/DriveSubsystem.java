@@ -15,17 +15,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.ShuffleValues;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.io.Console;
-import java.io.Serial;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -38,19 +31,19 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kFrontLeftChassisAngularOffset,
       DriveConstants.kFrontLeftAbsoluteEncoderCanId);
 
-  private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
+  public final MAXSwerveModule m_frontRight = new MAXSwerveModule(
       DriveConstants.kFrontRightDrivingCanId,
       DriveConstants.kFrontRightTurningCanId,
       DriveConstants.kFrontRightChassisAngularOffset,
       DriveConstants.kFrontRightAbsoluteEncoderCanId);
 
-  private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
+  public final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
       DriveConstants.kRearLeftDrivingCanId,
       DriveConstants.kRearLeftTurningCanId,
       DriveConstants.kRearLeftChassisAngularOffset,
       DriveConstants.kRearLeftAbsoluteEncoderCanId);
 
-  private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
+  public final MAXSwerveModule m_rearRight = new MAXSwerveModule(
       DriveConstants.kRearRightDrivingCanId,
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kRearRightChassisAngularOffset,
@@ -97,8 +90,8 @@ public class DriveSubsystem extends SubsystemBase {
                                                               // module feedforwards
         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic
                                         // drive trains
-            new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(0.3, 0.0, 0.0) // Rotation PID constants
+            new PIDConstants(4.8, 0.0, 0.15), // Translation PID constants
+            new PIDConstants(4.3, 0.0, 0.15) // Rotation PID constants
         ),
         config, // The robot configuration
         () -> {
@@ -164,16 +157,16 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed * ShuffleValues.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeed * ShuffleValues.kMaxSpeedMetersPerSecond;
-    double rotDelivered = rot * ShuffleValues.kMaxAngularSpeed;
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
 
     m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, getGyroYaw())
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        m_swerveModuleStates, ShuffleValues.kMaxSpeedMetersPerSecond);
+        m_swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(m_swerveModuleStates[0]);
     m_frontRight.setDesiredState(m_swerveModuleStates[1]);
     m_rearLeft.setDesiredState(m_swerveModuleStates[2]);
@@ -181,8 +174,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds speeds) {
-    System.out.println(speeds.vxMetersPerSecond);
-    System.out.println(speeds.vyMetersPerSecond);
+    // System.out.println(speeds.vxMetersPerSecond);
+    // System.out.println(speeds.vyMetersPerSecond);
     m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
     // SwerveDriveKinematics.desaturateWheelSpeeds(m_swerveModuleStates,
     // ShuffleValues.kMaxSpeedMetersPerSecond);
@@ -209,7 +202,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, ShuffleValues.kMaxSpeedMetersPerSecond);
+        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
     m_rearLeft.setDesiredState(desiredStates[2]);
@@ -222,6 +215,13 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.resetEncoders();
     m_frontRight.resetEncoders();
     m_rearRight.resetEncoders();
+  }
+
+  public void stop() {
+    m_frontLeft.stop();
+    m_frontRight.stop();
+    m_rearLeft.stop();
+    m_rearRight.stop();
   }
 
   /** Zeroes the heading of the robot. */

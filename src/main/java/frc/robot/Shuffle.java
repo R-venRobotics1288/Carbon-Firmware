@@ -30,7 +30,7 @@ public final class Shuffle {
 
   private GenericEntry slew = shuffleTab.addPersistent("xy slew",
       ShuffleValues.slewrate_translation)
-      .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1,
+      .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.1,
           "max", 10))
       .getEntry();
   private GenericEntry maxSpeed = shuffleTab.addPersistent("max speed",
@@ -45,7 +45,7 @@ public final class Shuffle {
       .getEntry();
   private GenericEntry rotSlew = shuffleTab.addPersistent("rotation slew",
       ShuffleValues.slewrate_rotation)
-      .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1,
+      .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.1,
           "max", 10))
       .getEntry();
   private GenericEntry fieldRelative = shuffleTab.addPersistent("field relative", ShuffleValues.kfieldRelative)

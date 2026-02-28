@@ -9,17 +9,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -40,6 +37,9 @@ public class RobotContainer {
 
   XboxController m_driverController = new XboxController(0);
   Trigger startButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
+  Trigger rotateButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
+  Trigger forwardButton = new JoystickButton(m_driverController, XboxController.Button.kB.value);
+  Trigger leftButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
 
   public Shuffle m_shuffle = new Shuffle();
 
@@ -55,13 +55,13 @@ public class RobotContainer {
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
         () -> m_robotDrive.drive(
-            -MathUtil.applyDeadband(ShuffleValues.translationfiltery.calculate(m_driverController.getLeftY()),
-                ShuffleValues.kDriveDeadband),
-            -MathUtil.applyDeadband(ShuffleValues.translationfilterx.calculate(m_driverController.getLeftX()),
-                ShuffleValues.kDriveDeadband),
-            -MathUtil.applyDeadband(ShuffleValues.rotationfilter.calculate(m_driverController.getRightX()),
-                ShuffleValues.kDriveDeadband),
-            ShuffleValues.kfieldRelative),
+            -MathUtil.applyDeadband(DriveConstants.translationfiltery.calculate(m_driverController.getLeftY()),
+                DriveConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(DriveConstants.translationfilterx.calculate(m_driverController.getLeftX()),
+                DriveConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(DriveConstants.rotationfilter.calculate(m_driverController.getRightX()),
+                DriveConstants.kDriveDeadband),
+            DriveConstants.kfieldRelative),
         m_robotDrive));
     LimelightHelpers.SetRobotOrientation("limelight",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
@@ -91,7 +91,7 @@ public class RobotContainer {
     startButton.onTrue(Commands.runOnce(() -> {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
-  }
+}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -143,6 +143,9 @@ public class RobotContainer {
   public void refresh_shuffleboard() {
     m_shuffle.refreshValue(m_robotDrive.m_frontLeft.getState().angle.getRadians(),
         m_robotDrive.m_frontLeft.getPosition().angle.getRadians());
+        
+    m_shuffle.refreshValue(m_robotDrive.m_frontRight.getState().angle.getRadians(),
+        m_robotDrive.m_frontRight.getPosition().angle.getRadians());
     m_field.setRobotPose(m_robotDrive.getPose());
   }
 
