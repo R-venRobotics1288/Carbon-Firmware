@@ -69,8 +69,8 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
     public static final boolean kfieldRelative = true;
 
-    public static final SlewRateLimiter translationfilterx = new SlewRateLimiter(.5);
-    public static final SlewRateLimiter translationfiltery = new SlewRateLimiter(.5);
+    public static final SlewRateLimiter translationfilterx = new SlewRateLimiter(.75);
+    public static final SlewRateLimiter translationfiltery = new SlewRateLimiter(.75);
     public static final SlewRateLimiter rotationfilter = new SlewRateLimiter(Math.PI);
   }
 
