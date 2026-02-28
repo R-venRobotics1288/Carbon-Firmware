@@ -16,11 +16,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.ClimberConstants;
+import frc.robot.commands.ClimberCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
+import frc.robot.commands.VariableShootCommand;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -34,12 +42,25 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public final HopperSubsystem m_hopper = new HopperSubsystem();
+  public final ClimberSubsystem m_climber = new ClimberSubsystem();
 
   XboxController m_driverController = new XboxController(0);
+  XboxController m_operatorController = new XboxController(1);
+
   Trigger startButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
+  Trigger variableShootButton = new JoystickButton(m_operatorController, XboxController.Button.kX.value);
+  Trigger shootButton = new JoystickButton(m_operatorController, XboxController.Button.kA.value);
+  Trigger intakeButton = new JoystickButton(m_operatorController, XboxController.Button.kY.value);
   Trigger rotateButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
   Trigger forwardButton = new JoystickButton(m_driverController, XboxController.Button.kB.value);
   Trigger leftButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
+  Trigger climbButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
+  Trigger cancelButton = new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value);
+
+  public final SequentialCommandGroup climbCommand = new SequentialCommandGroup(
+        new ClimberCommand(m_climber, ClimberConstants.kDesiredPosOne),  
+        new ClimberCommand(m_climber, ClimberConstants.kRetractedDesiredPos));
 
   public Shuffle m_shuffle = new Shuffle();
 
@@ -91,6 +112,12 @@ public class RobotContainer {
     startButton.onTrue(Commands.runOnce(() -> {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
+
+    variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
+    shootButton.whileTrue(new ShootCommand(m_hopper));
+    intakeButton.whileTrue(new IntakeCommand(m_hopper));
+    climbButton.onTrue(climbCommand);
+    cancelButton.onTrue(Commands.runOnce(climbCommand::cancel));
 }
 
   /**
