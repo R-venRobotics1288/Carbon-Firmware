@@ -22,6 +22,7 @@ import frc.robot.commands.HopperCommand;
 import frc.robot.commands.VariableShootCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HopperConstants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
@@ -74,15 +75,30 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
-        () -> m_robotDrive.drive(
-            -MathUtil.applyDeadband(ShuffleValues.translationfiltery.calculate(m_driverController.getLeftY()),
-                DriveConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(ShuffleValues.translationfilterx.calculate(m_driverController.getLeftX()),
-                DriveConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(ShuffleValues.rotationfilter.calculate(m_driverController.getRightX()),
-                DriveConstants.kDriveDeadband),
-            DriveConstants.kfieldRelative),
+        () -> { 
+          double leftY = DriveConstants.translationfiltery.calculate(m_driverController.getLeftY());
+          double leftX = DriveConstants.translationfilterx.calculate(m_driverController.getLeftX());
+          double rightX = DriveConstants.rotationfilter.calculate(m_driverController.getRightX());
+          // Apply a round deadband, based on the x/y distance from the origin
+          double distanceFromZero =
+              Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // Pythagoras
+          if (distanceFromZero < DriveConstants.kDriveDeadband) {
+            leftX = 0;
+            leftY = 0;
+          }
+
+          leftY = Math.pow(leftY, 3);
+          leftX = Math.pow(leftX, 3);
+          rightX = Math.pow(MathUtil.applyDeadband(rightX, DriveConstants.kDriveDeadband), 3);
+
+          m_robotDrive.drive(
+              -leftY,
+              -leftX,
+              -rightX,
+              DriveConstants.kfieldRelative);
+          },
         m_robotDrive));
+
     LimelightHelpers.SetRobotOrientation("limelight",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
