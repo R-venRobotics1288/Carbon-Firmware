@@ -76,9 +76,9 @@ public class RobotContainer {
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
         () -> { 
-          double leftY = DriveConstants.translationfiltery.calculate(m_driverController.getLeftY());
-          double leftX = DriveConstants.translationfilterx.calculate(m_driverController.getLeftX());
-          double rightX = DriveConstants.rotationfilter.calculate(m_driverController.getRightX());
+          double leftY = m_driverController.getLeftY();
+          double leftX = m_driverController.getLeftX();
+          double rightX = m_driverController.getRightX();
           // Apply a round deadband, based on the x/y distance from the origin
           double distanceFromZero =
               Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // Pythagoras
