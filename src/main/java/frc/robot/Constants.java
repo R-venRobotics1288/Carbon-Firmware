@@ -25,15 +25,16 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 1.25;
+    public static final double kMaxSpeedMetersPerSecond = 1.0;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(18);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(24);
-    public static final double kDriveDeadband = 0.09;
+    public static final double kTrackWidth = Units.inchesToMeters(22);
     // Distance between front and rear wheels on robot
+    public static final double kWheelBase = Units.inchesToMeters(22);
+    public static final double kDriveDeadband = 0.09;
+
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(kWheelBase / 2, kTrackWidth / 2),
       new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
@@ -41,8 +42,8 @@ public final class Constants {
       new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
       
       // Angular offsets of the modules relative to the chassis in radians
-      public static final double kFrontLeftChassisAngularOffset = Math.PI; //+ (0.3583984375 * 2 * Math.PI);
-      public static final double kFrontRightChassisAngularOffset = 0; //+ (0.623779296875 * 2 * Math.PI);
+      public static final double kFrontLeftChassisAngularOffset = 0; //+ (0.3583984375 * 2 * Math.PI);
+      public static final double kFrontRightChassisAngularOffset = Math.PI; //+ (0.623779296875 * 2 * Math.PI);
       public static final double kRearLeftChassisAngularOffset = 0; //+ (0.430419921875 * 2 * Math.PI);
       public static final double kRearRightChassisAngularOffset = Math.PI; //+ (0.28466796875 * 2 * Math.PI);
 
@@ -85,7 +86,7 @@ public final class Constants {
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
     //public static final double kDrivingMotorReduction = 5.14;
-    public static final double kDrivingMotorReduction = 6.75;
+    public static final double kDrivingMotorReduction = 5.9;
     public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
         / kDrivingMotorReduction;
 
@@ -97,11 +98,15 @@ public final class Constants {
   }
 
   public static final class HopperConstants {
+    public static final int kIntakeFlywheelCANID = 16;
     public static final int kShooterCANID = 17;
-    public static final int kIntakeCANID = 16;
 
-    public static final double kIntakeMotorSpeed = -0.30;
-    public static final double kShooterMotorSpeed = 0.80;
+    public static final double kIntakeFlywheelMotorSpeed = 0.50;
+    public static final double kIntakeFeederMotorSpeed = -0.50;
+    public static final double kShooterFlywheelMotorSpeed = 0.75;
+    public static final double kShooterFeederMotorSpeed = 0.70;
+    public static final double kReverseIntakeFlywheelMotorSpeed = -0.3; //TODO: figure out correct speed
+    public static final double kReverseIntakeFeederMotorSpeed = 0.4; //TODO: figure out correct speed
 
     public static final Translation2d kBlueHubPosition = new Translation2d(4.625, 4.035);
     public static final Translation2d kRedHubPosition = new Translation2d(11.915, 4.035);
