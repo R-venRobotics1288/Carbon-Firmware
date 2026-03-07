@@ -29,12 +29,12 @@ public class VariableShootCommand extends Command {
     @Override
     public void execute() {
         m_distance = m_driveSubsystem.getPose().getTranslation().getDistance(kHubPosition);
-        m_power = m_hopperSubsystem.getPower(m_distance);
-        m_hopperSubsystem.setShooterMotorSpeed(m_power);
+        m_power = m_hopperSubsystem.getFlywheelPower(m_distance);
+        m_hopperSubsystem.setMotorSpeed(m_power, HopperConstants.kShooterFeederMotorSpeed);
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_hopperSubsystem.stopShooter();
+        m_hopperSubsystem.stopMotors();
     }
 }

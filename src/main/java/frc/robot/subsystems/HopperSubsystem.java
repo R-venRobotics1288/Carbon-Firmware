@@ -12,45 +12,37 @@ import frc.robot.Constants.HopperConstants;
 
 public class HopperSubsystem extends SubsystemBase {
 
-    private final SparkFlex m_shooterMotor;
-    private final SparkFlex m_intakeMotor;
-    private final InterpolatingDoubleTreeMap shooterPower;
+    private final SparkFlex m_feederMotor;
+    private final SparkFlex m_flywheelMotor;
+    private final InterpolatingDoubleTreeMap shooterFlywheelPower;
 
     public HopperSubsystem() {
-        m_shooterMotor = new SparkFlex(HopperConstants.kShooterCANID, MotorType.kBrushless);
-        m_intakeMotor = new SparkFlex(HopperConstants.kIntakeCANID, MotorType.kBrushless);
+        m_feederMotor = new SparkFlex(HopperConstants.kShooterCANID, MotorType.kBrushless);
+        m_flywheelMotor = new SparkFlex(HopperConstants.kIntakeFlywheelCANID, MotorType.kBrushless);
 
-        m_shooterMotor.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
+        m_feederMotor.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        m_intakeMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
+        m_flywheelMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
         
-        shooterPower = new InterpolatingDoubleTreeMap();
-        shooterPower.put(1.0, 0.6);
-        shooterPower.put(2.0, 0.7);
-        shooterPower.put(3.0, 0.8);
+        shooterFlywheelPower = new InterpolatingDoubleTreeMap();
+        shooterFlywheelPower.put(1.0, 0.6);
+        shooterFlywheelPower.put(2.0, 0.7);
+        shooterFlywheelPower.put(3.0, 0.8);
     }
 
-    public void setShooterMotorSpeed(double speed) {
-        m_shooterMotor.set(speed);   
+    public void setMotorSpeed(double flywheelSpeed, double feederMotorSpeed) {
+        m_flywheelMotor.set(flywheelSpeed);
+        m_feederMotor.set(feederMotorSpeed);
     }
 
-    public void stopShooter() {
-        m_shooterMotor.stopMotor();
+    public void stopMotors() {
+        m_flywheelMotor.stopMotor();
+        m_feederMotor.stopMotor();
     }
 
-    public void setIntakeMotorSpeed(double intakeSpeed, double shooterSpeed) {
-        m_intakeMotor.set(intakeSpeed);
-        m_shooterMotor.set(shooterSpeed);
-    }
-
-    public void stopIntake() {
-        m_intakeMotor.stopMotor();
-        m_shooterMotor.stopMotor();
-    }
-
-    public double getPower(double distance) {
-        return shooterPower.get(distance);
+    public double getFlywheelPower(double distance) {
+        return shooterFlywheelPower.get(distance);
     }
 
 }
