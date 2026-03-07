@@ -46,10 +46,25 @@ shooter speeds:
   - feeder: 70
 
 Robot Configs:
-    -Length: 27 1/2 in
-    -Width: 27 1/2 in
-    -Wheel Radius: 2 in
-    -Wheel Base and Track Width: 22 in
+    -Length: 27"-1/2 in 0.6985m
+    -Width: 27"-1/2 in 0.6985m
+    -Wheel Radius: 2" in
+    -Wheel Base and Track Width: 22" in
     -Driving Gear Ratio: 5.9
     -Steering Gear Ratio: 12.8
-    -Weight: 37.9 Kg
+    -Weight with Battery: 37.9 Kg
+    -MOI (Moment of Inertia): 3.0819 
+        -1/12*(mass)*(length^2 + width^2)   
+
+Limelight:
+    -It gets put in to the settings found in path planner
+        -Click the left corner with the three bars
+        -Look at the bottom for settings
+    -You will need:
+        -Wheel Radius in meters
+        -Weight of robot with bumper and battery in Kg
+        -Bumper offsets in meters
+        -Moment of Inertia
+            -Weight of Robot with bumper and battery in Kg
+            -Length of Robot in meters
+            -Width of Robot in meters
