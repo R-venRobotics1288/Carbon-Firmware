@@ -23,11 +23,6 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class DriveConstants {
-    // Driving Parameters - Note that these are not the maximum capable speeds of
-    // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 1.0;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
-
     // Chassis configuration
     // Distance between centers of right and left wheels on robot
     public static final double kTrackWidth = Units.inchesToMeters(22);
@@ -69,10 +64,6 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
     public static final boolean kfieldRelative = true;
-
-    public static final SlewRateLimiter translationfilterx = new SlewRateLimiter(.75);
-    public static final SlewRateLimiter translationfiltery = new SlewRateLimiter(.75);
-    public static final SlewRateLimiter rotationfilter = new SlewRateLimiter(Math.PI);
   }
 
   public static final class ModuleConstants {

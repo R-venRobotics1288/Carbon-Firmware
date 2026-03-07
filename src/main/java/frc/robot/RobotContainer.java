@@ -43,7 +43,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public final HopperSubsystem m_hopper = new HopperSubsystem();
-  // public final ClimberSubsystem m_climber = new ClimberSubsystem();
+  public final ClimberSubsystem m_climber = new ClimberSubsystem();
 
   XboxController m_driverController = new XboxController(0);
   XboxController m_operatorController = new XboxController(1);
@@ -75,11 +75,11 @@ public class RobotContainer {
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
         () -> m_robotDrive.drive(
-            -MathUtil.applyDeadband(DriveConstants.translationfiltery.calculate(m_driverController.getLeftY()),
+            -MathUtil.applyDeadband(ShuffleValues.translationfiltery.calculate(m_driverController.getLeftY()),
                 DriveConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(DriveConstants.translationfilterx.calculate(m_driverController.getLeftX()),
+            -MathUtil.applyDeadband(ShuffleValues.translationfilterx.calculate(m_driverController.getLeftX()),
                 DriveConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(DriveConstants.rotationfilter.calculate(m_driverController.getRightX()),
+            -MathUtil.applyDeadband(ShuffleValues.rotationfilter.calculate(m_driverController.getRightX()),
                 DriveConstants.kDriveDeadband),
             DriveConstants.kfieldRelative),
         m_robotDrive));
