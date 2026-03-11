@@ -1,5 +1,9 @@
 package frc.robot.commands;
 
+import java.io.Console;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,28 +17,37 @@ public class VariableShootCommand extends Command {
     private double m_distance;
     private double m_power;
     private final Translation2d kHubPosition;
+    private PIDController thetaController;
 
     public VariableShootCommand(HopperSubsystem hopperSubsystem, DriveSubsystem driveSubsystem) {
         m_hopperSubsystem = hopperSubsystem;
         m_driveSubsystem = driveSubsystem;
         kHubPosition = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? HopperConstants.kRedHubPosition : HopperConstants.kBlueHubPosition;
-        addRequirements(hopperSubsystem);
+        addRequirements(hopperSubsystem, m_driveSubsystem);
     }
 
     @Override
     public void initialize() {
-        
+        thetaController = new PIDController(5, 0, 0);
+        thetaController.setTolerance(2 * Math.PI * 5/360);
     }
 
     @Override
     public void execute() {
-        m_distance = m_driveSubsystem.getPose().getTranslation().getDistance(kHubPosition);
-        m_power = m_hopperSubsystem.getFlywheelPower(m_distance);
-        m_hopperSubsystem.setMotorSpeed(m_power, HopperConstants.kShooterFeederMotorSpeed);
+        Pose2d robotPose = m_driveSubsystem.getPose();
+        double angle = Math.atan2(kHubPosition.getY() - robotPose.getY(), kHubPosition.getX() - robotPose.getX());
+        thetaController.setSetpoint(angle);
+        double angleOverride = (thetaController.calculate((m_driveSubsystem.getHeading() / 360) * 2 * Math.PI))*2*Math.PI;
+        m_driveSubsystem.setYawOverride(angleOverride);
+        System.out.println(angleOverride);
+        //m_distance = robotPose.getTranslation().getDistance(kHubPosition);
+        //m_power = m_hopperSubsystem.getFlywheelPower(m_distance);
+        //m_hopperSubsystem.setMotorSpeed(m_power, HopperConstants.kShooterFeederMotorSpeed);
     }
 
     @Override
     public void end(boolean interrupted) {
         m_hopperSubsystem.stopMotors();
+        m_driveSubsystem.clearYawOverride();
     }
 }

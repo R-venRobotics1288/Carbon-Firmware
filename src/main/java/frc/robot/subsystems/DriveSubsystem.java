@@ -57,6 +57,8 @@ public class DriveSubsystem extends SubsystemBase {
       .toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
   private final SwerveModulePosition[] m_modulePositions = new SwerveModulePosition[4]; // To avoid GC in periodic
 
+  private double overrideYaw = 0;
+
   // Odometry class for tracking robot pose
   public SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
@@ -159,6 +161,11 @@ public class DriveSubsystem extends SubsystemBase {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+
+    rot = (overrideYaw != 0)
+      ? overrideYaw
+      : rot;
+
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
 
     m_swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
@@ -263,4 +270,11 @@ public class DriveSubsystem extends SubsystemBase {
    *         }
    */
 
+   public void setYawOverride(double override) {
+    overrideYaw = override;
+   }
+
+   public void clearYawOverride() {
+    overrideYaw = 0;
+   }
 }

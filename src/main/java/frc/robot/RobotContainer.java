@@ -53,7 +53,7 @@ public class RobotContainer {
   Trigger shootButton = new Trigger(() -> m_operatorController.getRightTriggerAxis() > 0.8);
   Trigger dumpButton = new Trigger(() -> m_operatorController.getLeftTriggerAxis() > 0.8);
   Trigger clearJamButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
-  // Trigger variableShootButton = new JoystickButton(m_operatorController, XboxController.Button.kX.value);
+  Trigger variableShootButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
   // Trigger climbButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
   // Trigger cancelButton = new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value);
 
@@ -116,8 +116,7 @@ public class RobotContainer {
     shootButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed));
     dumpButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed));
     clearJamButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0));
-
-    // variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
+    variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
     // climbButton.onTrue(climbCommand);
     // cancelButton.onTrue(Commands.runOnce(climbCommand::cancel));
 }
