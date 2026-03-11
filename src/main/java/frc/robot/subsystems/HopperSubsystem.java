@@ -6,7 +6,10 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Configs.HopperConfigs;
 import frc.robot.Constants.HopperConstants;
 
@@ -31,9 +34,15 @@ public class HopperSubsystem extends SubsystemBase {
         shooterFlywheelPower.put(3.0, 0.8);
     }
 
-    public void setMotorSpeed(double flywheelSpeed, double feederMotorSpeed) {
-        m_flywheelMotor.set(flywheelSpeed);
-        m_feederMotor.set(feederMotorSpeed);
+    public Command setMotorSpeed(double flywheelSpeed, double feederMotorSpeed) {
+        return Commands.runEnd(() -> {
+            m_flywheelMotor.set(flywheelSpeed);
+            new WaitCommand(1);
+            m_feederMotor.set(feederMotorSpeed);
+            }, () -> {
+            m_flywheelMotor.set(0);
+            m_feederMotor.set(0);
+            }, this);
     }
 
     public void stopMotors() {
