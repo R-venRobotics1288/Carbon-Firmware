@@ -23,12 +23,12 @@ public class VariableShootCommand extends Command {
         m_hopperSubsystem = hopperSubsystem;
         m_driveSubsystem = driveSubsystem;
         kHubPosition = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? HopperConstants.kRedHubPosition : HopperConstants.kBlueHubPosition;
-        addRequirements(hopperSubsystem, m_driveSubsystem);
+        addRequirements(hopperSubsystem);
     }
 
     @Override
     public void initialize() {
-        thetaController = new PIDController(5, 0, 0);
+        thetaController = new PIDController(0.3, 0, 0.07);
         thetaController.setTolerance(2 * Math.PI * 5/360);
     }
 
