@@ -134,10 +134,10 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
 
-    intakeButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed));
-    shootButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed));
-    dumpButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed));
-    clearJamButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0));
+    intakeButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0));
+    shootButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 0));
+    dumpButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0));
+    clearJamButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0, 0));
 
     // variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
     // climbButton.onTrue(climbCommand);

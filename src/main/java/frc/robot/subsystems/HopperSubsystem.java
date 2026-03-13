@@ -34,18 +34,17 @@ public class HopperSubsystem extends SubsystemBase {
         shooterFlywheelPower.put(3.0, 0.8);
     }
 
-    public Command setMotorSpeed(double flywheelSpeed, double feederMotorSpeed) {
-        return Commands.runEnd(() -> {
-            m_flywheelMotor.set(flywheelSpeed);
-            new WaitCommand(1);
-            m_feederMotor.set(feederMotorSpeed);
-            }, () -> {
-            m_flywheelMotor.set(0);
-            m_feederMotor.set(0);
-            }, this);
+    public Command setMotorSpeed(double flywheelSpeed, double feederMotorSpeed, double delay) {
+        return Commands.sequence(
+            runOnce(() -> m_flywheelMotor.set(flywheelSpeed)),
+            Commands.waitSeconds(delay),
+            runOnce(() -> m_feederMotor.set(feederMotorSpeed))
+        );
     }
 
     public void stopMotors() {
+        m_flywheelMotor.set(0);
+        m_feederMotor.set(0);
         m_flywheelMotor.stopMotor();
         m_feederMotor.stopMotor();
     }
