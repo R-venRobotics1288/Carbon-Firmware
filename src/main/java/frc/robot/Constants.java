@@ -89,7 +89,7 @@ public final class Constants {
   }
 
   public static final class HopperConstants {
-    public static final int kIntakeFlywheelCANID = 16;
+    public static final int kFlywheelCANID = 16;
     public static final int kShooterCANID = 17;
 
     public static final double kIntakeFlywheelMotorSpeed = 0.50;
