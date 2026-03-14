@@ -15,64 +15,70 @@ import frc.robot.Constants.HopperConstants;
 public class HopperSubsystem extends SubsystemBase {
 
     private final SparkFlex m_feederMotor;
-    private final SparkFlex m_flywheelMotor;
-    private final InterpolatingDoubleTreeMap shooterFlywheelPower;
+    private final SparkFlex m_rightFlywheelMotor;
+    private final SparkFlex m_leftFlywheelMotor;
+    private final SparkFlex m_agitatorMotor;
+    private final InterpolatingDoubleTreeMap m_shooterFlywheelPower;
 
     public HopperSubsystem() {
-        m_feederMotor = new SparkFlex(HopperConstants.kShooterCANID, MotorType.kBrushless);
-        m_flywheelMotor = new SparkFlex(HopperConstants.kFlywheelCANID, MotorType.kBrushless);
+        m_feederMotor = new SparkFlex(HopperConstants.kFeederCANID, MotorType.kBrushless);
+        m_rightFlywheelMotor = new SparkFlex(HopperConstants.kRightFlywheelCANID, MotorType.kBrushless);
+        m_leftFlywheelMotor = new SparkFlex(HopperConstants.kLeftFlywheelCANID, MotorType.kBrushless);
+        m_agitatorMotor = new SparkFlex(HopperConstants.kAgitatorCANID, MotorType.kBrushless);
 
-        m_feederMotor.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
+        m_feederMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        m_flywheelMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
+        m_rightFlywheelMotor.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        
-        shooterFlywheelPower = new InterpolatingDoubleTreeMap();
-        shooterFlywheelPower.put(1.0, 0.6);
-        shooterFlywheelPower.put(2.0, 0.7);
-        shooterFlywheelPower.put(3.0, 0.8);
+        m_leftFlywheelMotor.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
+        m_agitatorMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
+
+        m_shooterFlywheelPower = new InterpolatingDoubleTreeMap();
+        m_shooterFlywheelPower.put(1.0, 0.6);
+        m_shooterFlywheelPower.put(2.0, 0.7);
+        m_shooterFlywheelPower.put(3.0, 0.8);
 
         setDefaultCommand(
         runOnce(
                 () -> {
-                  m_flywheelMotor.disable();
+                  m_rightFlywheelMotor.disable();
+                  m_leftFlywheelMotor.disable();
                   m_feederMotor.disable();
+                  m_agitatorMotor.disable();
                 })
             .andThen(run(() -> {}))
             .withName("Idle"));
 
     }
 
-    public Command setMotorSpeed(double flywheelSpeed, double feederMotorSpeed, double delay) {
-        return Commands.sequence(
-            runOnce(() -> m_flywheelMotor.set(flywheelSpeed)),
-            Commands.waitSeconds(delay),
-            runOnce(() -> m_feederMotor.set(feederMotorSpeed))
-        );
-    }
-
-    public Command shootCommand(double flywheelSpeed, double feederMotorSpeed, double delay) {
+    public Command shootCommand(double flywheelSpeed, double feederMotorSpeed, double delay, boolean agitator) {
     return Commands.parallel(
             // Run the shooter flywheel at the desired setpoint using feedforward and feedback
             run(
                 () -> {
-                  m_flywheelMotor.set(flywheelSpeed);
+                  m_rightFlywheelMotor.set(flywheelSpeed);
+                  m_leftFlywheelMotor.set(-flywheelSpeed);
                 }),
 
             // Wait until the shooter has reached the setpoint, and then run the feeder
-            Commands.waitSeconds(delay).andThen(() -> m_feederMotor.set(feederMotorSpeed)))
+            Commands.waitSeconds(delay).andThen(() -> { 
+                m_feederMotor.set(feederMotorSpeed);
+                m_agitatorMotor.set(HopperConstants.kAgitatorMotorSpeed);
+            }))
         .withName("Shoot");
   }
 
     public void stopMotors() {
-        m_flywheelMotor.set(0);
+        m_rightFlywheelMotor.set(0);
         m_feederMotor.set(0);
-        m_flywheelMotor.stopMotor();
+        m_rightFlywheelMotor.stopMotor();
         m_feederMotor.stopMotor();
     }
 
     public double getFlywheelPower(double distance) {
-        return shooterFlywheelPower.get(distance);
+        return m_shooterFlywheelPower.get(distance);
     }
 
 }
