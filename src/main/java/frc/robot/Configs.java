@@ -64,16 +64,16 @@ public final class Configs {
     }
 
     public static final class HopperConfigs {
-        public static final SparkFlexConfig shooterConfig = new SparkFlexConfig();
         public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
+        public static final SparkFlexConfig shooterConfig = new SparkFlexConfig();
 
         static {
-                shooterConfig 
+                intakeConfig 
                         .idleMode(IdleMode.kCoast)
                         .smartCurrentLimit(80);
                 
-                intakeConfig
-                        .idleMode(IdleMode.kCoast) //maybe brake mode
+                shooterConfig
+                        .idleMode(IdleMode.kCoast)
                         .smartCurrentLimit(80);
         }
     }

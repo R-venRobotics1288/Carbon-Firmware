@@ -125,10 +125,10 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
 
-    intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0));
-    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 1.0)); //TODO: tune delay!!
-    dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0));
-    clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0));
+    intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0, false));
+    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 1.0, true)); //TODO: tune delay!!
+    dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0, true));
+    clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0, true));
 
     // variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
     // climbButton.onTrue(climbCommand);

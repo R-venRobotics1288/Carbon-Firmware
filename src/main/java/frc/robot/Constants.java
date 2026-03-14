@@ -88,8 +88,10 @@ public final class Constants {
   }
 
   public static final class HopperConstants {
-    public static final int kFlywheelCANID = 16;
-    public static final int kShooterCANID = 17;
+    public static final int kRightFlywheelCANID = 16;
+    public static final int kFeederCANID = 17;
+    public static final int kLeftFlywheelCANID = 18;
+    public static final int kAgitatorCANID = 19;
 
     public static final double kIntakeFlywheelMotorSpeed = 0.50;
     public static final double kIntakeFeederMotorSpeed = -0.50;
@@ -97,14 +99,15 @@ public final class Constants {
     public static final double kShooterFeederMotorSpeed = 0.70;
     public static final double kReverseIntakeFlywheelMotorSpeed = -0.3; //TODO: figure out correct speed
     public static final double kReverseIntakeFeederMotorSpeed = 0.4; //TODO: figure out correct speed
+    public static final double kAgitatorMotorSpeed = 60; //RPM
 
     public static final Translation2d kBlueHubPosition = new Translation2d(4.625, 4.035);
     public static final Translation2d kRedHubPosition = new Translation2d(11.915, 4.035);
   }
 
   public static final class ClimberConstants {
-    public static final int kLeftCANId = 18;
-    public static final int kRightCANId = 19; //may not use one motor
+    public static final int kLeftCANId = 20;
+    public static final int kRightCANId = 21; //may not use one motor
 
     public static final double kGearRatio = 1.0; //change later
 
