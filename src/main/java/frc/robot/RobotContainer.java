@@ -16,19 +16,17 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.ClimberConstants;
-import frc.robot.commands.ClimberCommand;
-import frc.robot.commands.VariableShootCommand;
+// import frc.robot.Constants.ClimberConstants;
+// import frc.robot.commands.ClimberCommand;
+// import frc.robot.commands.VariableShootCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HopperConstants;
-import frc.robot.Constants.ModuleConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -75,9 +73,9 @@ public class RobotContainer {
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
         () -> { 
-          double leftY = DriveConstants.translationfiltery.calculate(m_driverController.getLeftY());
-          double leftX = DriveConstants.translationfilterx.calculate(m_driverController.getLeftX());
-          double rightX = DriveConstants.rotationfilter.calculate(m_driverController.getRightX());
+          double leftY = ShuffleValues.translationfiltery.calculate(m_driverController.getLeftY());
+          double leftX = ShuffleValues.translationfilterx.calculate(m_driverController.getLeftX());
+          double rightX = ShuffleValues.rotationfilter.calculate(m_driverController.getRightX());
           // Apply a round deadband, based on the x/y distance from the origin
           double distanceFromZero =
               Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // Pythagoras
