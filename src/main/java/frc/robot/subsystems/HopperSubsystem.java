@@ -70,7 +70,7 @@ public class HopperSubsystem extends SubsystemBase {
                 // feedback
                 run(
                         () -> {
-                            m_rightFlywheelMotor.set(0);
+                            m_rightFlywheelMotor.set(flywheelSpeed);
                             // m_leftFlywheelMotor.set(-flywheelSpeed);
                             double val = agitatorPID.calculate(m_agitatorEncoder.getVelocity());
                             System.out.print(val);
@@ -81,7 +81,7 @@ public class HopperSubsystem extends SubsystemBase {
 
                 // Wait until the shooter has reached the setpoint, and then run the feeder
                 Commands.waitSeconds(delay).andThen(() -> {
-                    m_feederMotor.set(0);
+                    m_feederMotor.set(feederMotorSpeed);
                 })))
                 .withName("Shoot");
     }
