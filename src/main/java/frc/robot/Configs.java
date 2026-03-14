@@ -31,7 +31,7 @@ public final class Configs {
             drivingConfig.closedLoop
                     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                     // These are example gains you may need to them for your own robot!
-                    .pid(0.5, 0, 0.0)
+                    .pid(0.4, 0, 0.0)
                     .outputRange(-1, 1);
                     //.feedForward.kV(drivingVelocityFeedForward);
 
@@ -64,16 +64,16 @@ public final class Configs {
     }
 
     public static final class HopperConfigs {
-        public static final SparkFlexConfig shooterConfig = new SparkFlexConfig();
         public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
+        public static final SparkFlexConfig shooterConfig = new SparkFlexConfig();
 
         static {
-                shooterConfig 
+                intakeConfig 
                         .idleMode(IdleMode.kCoast)
                         .smartCurrentLimit(80);
                 
-                intakeConfig
-                        .idleMode(IdleMode.kCoast) //maybe brake mode
+                shooterConfig
+                        .idleMode(IdleMode.kCoast)
                         .smartCurrentLimit(80);
         }
     }

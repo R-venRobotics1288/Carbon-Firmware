@@ -16,10 +16,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.ClimberConstants;
-import frc.robot.commands.ClimberCommand;
-import frc.robot.commands.HopperCommand;
-import frc.robot.commands.VariableShootCommand;
+// import frc.robot.Constants.ClimberConstants;
+// import frc.robot.commands.ClimberCommand;
+// import frc.robot.commands.VariableShootCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HopperConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -28,7 +27,6 @@ import frc.robot.subsystems.HopperSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -43,7 +41,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public final HopperSubsystem m_hopper = new HopperSubsystem();
-  // public final ClimberSubsystem m_climber = new ClimberSubsystem();
+  public final ClimberSubsystem m_climber = new ClimberSubsystem();
 
   XboxController m_driverController = new XboxController(0);
   XboxController m_operatorController = new XboxController(1);
@@ -74,15 +72,30 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
-        () -> m_robotDrive.drive(
-            -MathUtil.applyDeadband(DriveConstants.translationfiltery.calculate(m_driverController.getLeftY()),
-                DriveConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(DriveConstants.translationfilterx.calculate(m_driverController.getLeftX()),
-                DriveConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(DriveConstants.rotationfilter.calculate(m_driverController.getRightX()),
-                DriveConstants.kDriveDeadband),
-            DriveConstants.kfieldRelative),
+        () -> { 
+          double leftY = ShuffleValues.translationfiltery.calculate(m_driverController.getLeftY());
+          double leftX = ShuffleValues.translationfilterx.calculate(m_driverController.getLeftX());
+          double rightX = ShuffleValues.rotationfilter.calculate(m_driverController.getRightX());
+          // Apply a round deadband, based on the x/y distance from the origin
+          double distanceFromZero =
+              Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // Pythagoras
+          if (distanceFromZero < DriveConstants.kDriveDeadband) {
+            leftX = 0;
+            leftY = 0;
+          }
+
+          leftY = Math.pow(leftY, 3);
+          leftX = Math.pow(leftX, 3);
+          rightX = Math.pow(MathUtil.applyDeadband(rightX, DriveConstants.kDriveDeadband), 3);
+
+          m_robotDrive.drive(
+              -leftY,
+              -leftX,
+              -rightX,
+              DriveConstants.kfieldRelative);
+          },
         m_robotDrive));
+
     LimelightHelpers.SetRobotOrientation("limelight",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
@@ -112,11 +125,12 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
 
-    intakeButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed));
-    shootButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed));
-    dumpButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed));
-    clearJamButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0));
-    variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
+    intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0, false));
+    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 1.0, true)); //TODO: tune delay!!
+    dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0, true));
+    clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0, true));
+
+    // variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
     // climbButton.onTrue(climbCommand);
     // cancelButton.onTrue(Commands.runOnce(climbCommand::cancel));
 }

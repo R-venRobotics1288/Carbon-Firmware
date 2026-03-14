@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -23,11 +22,6 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class DriveConstants {
-    // Driving Parameters - Note that these are not the maximum capable speeds of
-    // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 1.0;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
-
     // Chassis configuration
     // Distance between centers of right and left wheels on robot
     public static final double kTrackWidth = Units.inchesToMeters(22);
@@ -69,10 +63,6 @@ public final class Constants {
 
     public static final boolean kGyroReversed = false;
     public static final boolean kfieldRelative = true;
-
-    public static final SlewRateLimiter translationfilterx = new SlewRateLimiter(.75);
-    public static final SlewRateLimiter translationfiltery = new SlewRateLimiter(.75);
-    public static final SlewRateLimiter rotationfilter = new SlewRateLimiter(Math.PI);
   }
 
   public static final class ModuleConstants {
@@ -98,23 +88,26 @@ public final class Constants {
   }
 
   public static final class HopperConstants {
-    public static final int kIntakeFlywheelCANID = 16;
-    public static final int kShooterCANID = 17;
+    public static final int kRightFlywheelCANID = 16;
+    public static final int kFeederCANID = 17;
+    public static final int kLeftFlywheelCANID = 18;
+    public static final int kAgitatorCANID = 19;
 
     public static final double kIntakeFlywheelMotorSpeed = 0.50;
     public static final double kIntakeFeederMotorSpeed = -0.50;
     public static final double kShooterFlywheelMotorSpeed = 0.85;
-    public static final double kShooterFeederMotorSpeed = 0.8;
+    public static final double kShooterFeederMotorSpeed = 0.70;
     public static final double kReverseIntakeFlywheelMotorSpeed = -0.3; //TODO: figure out correct speed
     public static final double kReverseIntakeFeederMotorSpeed = 0.4; //TODO: figure out correct speed
+    public static final double kAgitatorMotorSpeed = 60; //RPM
 
     public static final Translation2d kBlueHubPosition = new Translation2d(4.625, 4.035);
     public static final Translation2d kRedHubPosition = new Translation2d(11.915, 4.035);
   }
 
   public static final class ClimberConstants {
-    public static final int kLeftCANId = 18;
-    public static final int kRightCANId = 19; //may not use one motor
+    public static final int kLeftCANId = 20;
+    public static final int kRightCANId = 21; //may not use one motor
 
     public static final double kGearRatio = 1.0; //change later
 
