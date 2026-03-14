@@ -19,7 +19,7 @@ public class HopperSubsystem extends SubsystemBase {
 
     private final SparkFlex m_feederMotor;
     private final SparkFlex m_rightFlywheelMotor;
-    // private final SparkFlex m_leftFlywheelMotor;
+    private final SparkFlex m_leftFlywheelMotor;
     private final SparkFlex m_agitatorMotor;
     private final RelativeEncoder m_agitatorEncoder;
     private final InterpolatingDoubleTreeMap m_shooterFlywheelPower;
@@ -28,7 +28,7 @@ public class HopperSubsystem extends SubsystemBase {
     public HopperSubsystem() {
         m_feederMotor = new SparkFlex(HopperConstants.kFeederCANID, MotorType.kBrushless);
         m_rightFlywheelMotor = new SparkFlex(HopperConstants.kRightFlywheelCANID, MotorType.kBrushless);
-        // m_leftFlywheelMotor = new SparkFlex(HopperConstants.kLeftFlywheelCANID, MotorType.kBrushless);
+        m_leftFlywheelMotor = new SparkFlex(HopperConstants.kLeftFlywheelCANID, MotorType.kBrushless);
         m_agitatorMotor = new SparkFlex(HopperConstants.kAgitatorCANID, MotorType.kBrushless);
         m_agitatorEncoder = m_agitatorMotor.getEncoder();
 
@@ -36,8 +36,8 @@ public class HopperSubsystem extends SubsystemBase {
                 PersistMode.kPersistParameters);
         m_rightFlywheelMotor.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        // m_leftFlywheelMotor.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
-                // PersistMode.kPersistParameters);
+        m_leftFlywheelMotor.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
         m_agitatorMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
@@ -52,7 +52,7 @@ public class HopperSubsystem extends SubsystemBase {
                 runOnce(
                         () -> {
                             m_rightFlywheelMotor.disable();
-                            // m_leftFlywheelMotor.disable();
+                            m_leftFlywheelMotor.disable();
                             m_feederMotor.disable();
                             m_agitatorMotor.disable();
                         })
@@ -64,25 +64,32 @@ public class HopperSubsystem extends SubsystemBase {
 
     public Command shootCommand(double flywheelSpeed, double feederMotorSpeed, double delay, boolean agitator) {
         return Commands.sequence(
-            runOnce(() -> agitatorPID.setSetpoint(HopperConstants.kAgitatorMotorSpeed)),
-        Commands.parallel(
-                // Run the shooter flywheel at the desired setpoint using feedforward and
-                // feedback
-                run(
-                        () -> {
-                            m_rightFlywheelMotor.set(flywheelSpeed);
-                            // m_leftFlywheelMotor.set(-flywheelSpeed);
-                            double val = agitatorPID.calculate(m_agitatorEncoder.getVelocity());
-                            System.out.print(val);
-                            System.out.print(" : ");
-                            System.out.println(m_agitatorEncoder.getVelocity());
-                            m_agitatorMotor.setVoltage(MathUtil.clamp(val, 0.0, 12));
-                        }),
+                runOnce(() -> {
+                    if (agitator) {
+                        agitatorPID.setSetpoint(HopperConstants.kAgitatorMotorSpeed);
+                    } else {
+                        agitatorPID.setSetpoint(0);
+                    }
+                }),
+                Commands.parallel(
 
-                // Wait until the shooter has reached the setpoint, and then run the feeder
-                Commands.waitSeconds(delay).andThen(() -> {
-                    m_feederMotor.set(feederMotorSpeed);
-                })))
+                        // Run the shooter flywheel at the desired setpoint using feedforward and
+                        // feedback
+                        run(
+                                () -> {
+                                    m_rightFlywheelMotor.set(flywheelSpeed);
+                                    m_leftFlywheelMotor.set(-flywheelSpeed);
+                                    double val = agitatorPID.calculate(m_agitatorEncoder.getVelocity());
+                                    System.out.print(val);
+                                    System.out.print(" : ");
+                                    System.out.println(m_agitatorEncoder.getVelocity());
+                                    m_agitatorMotor.setVoltage(MathUtil.clamp(val, 0.0, 12));
+                                }),
+
+                        // Wait until the shooter has reached the setpoint, and then run the feeder
+                        Commands.waitSeconds(delay).andThen(() -> {
+                            m_feederMotor.set(feederMotorSpeed);
+                        })))
                 .withName("Shoot");
     }
 
