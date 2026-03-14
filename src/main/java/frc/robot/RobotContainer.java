@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.commands.ClimberCommand;
-import frc.robot.commands.HopperCommand;
 import frc.robot.commands.VariableShootCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HopperConstants;
@@ -44,7 +43,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public final HopperSubsystem m_hopper = new HopperSubsystem();
-  // public final ClimberSubsystem m_climber = new ClimberSubsystem();
+  public final ClimberSubsystem m_climber = new ClimberSubsystem();
 
   XboxController m_driverController = new XboxController(0);
   XboxController m_operatorController = new XboxController(1);
@@ -128,10 +127,10 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
 
-    intakeButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed));
-    shootButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed));
-    dumpButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed));
-    clearJamButton.whileTrue(new HopperCommand(m_hopper, HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0));
+    intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0));
+    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 1.0)); //TODO: tune delay!!
+    dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0));
+    clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0));
 
     // variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
     // climbButton.onTrue(climbCommand);

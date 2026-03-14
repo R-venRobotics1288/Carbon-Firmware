@@ -48,16 +48,8 @@ public final class Shuffle {
       .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.1,
           "max", 10))
       .getEntry();
-  private GenericEntry fieldRelative = shuffleTab.addPersistent("field relative", ShuffleValues.kfieldRelative)
-      .withWidget(BuiltInWidgets.kToggleButton).getEntry();
-  public GenericEntry desiredPosition = shuffleTab.add("desiredPosition", 0).getEntry();
-  public GenericEntry actualPosition = shuffleTab.add("actualPosition", 0).getEntry();
-
-  public void refreshValue(double desiredpos, double actualpos) {
-    desiredPosition.setDouble(desiredpos);
-    actualPosition.setDouble(actualpos);
-
-    if (ShuffleValues.SHUFFLE_MANAGER_ENABLED) {
+public void refreshValue(double desiredpos, double actualpos) {
+if (ShuffleValues.SHUFFLE_MANAGER_ENABLED) {
 
       Double maxSpeedDouble = maxSpeed.getDouble(ShuffleValues.kMaxSpeedMetersPerSecond);
       if (ShuffleValues.kMaxSpeedMetersPerSecond != maxSpeedDouble) {
@@ -81,16 +73,6 @@ public final class Shuffle {
         ShuffleValues.slewrate_rotation = slewRotationDouble;
         ShuffleValues.rotationfilter = new SlewRateLimiter(slewRotationDouble);
       }
-
-      Boolean fieldRelativBoolean = fieldRelative.getBoolean(ShuffleValues.kfieldRelative);
-      if (ShuffleValues.kfieldRelative != fieldRelativBoolean) {
-        ShuffleValues.kfieldRelative = fieldRelativBoolean;
-      }
     }
-  }
-
-  public void changeFieldRelative(Boolean input) {
-    ShuffleValues.kfieldRelative = input;
-    fieldRelative.setBoolean(input);
   }
 }

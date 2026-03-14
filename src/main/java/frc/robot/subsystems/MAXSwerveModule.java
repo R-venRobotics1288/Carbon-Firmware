@@ -50,7 +50,7 @@ public class MAXSwerveModule {
     //m_turningEncoder.setPosition(0);
 
     m_drivingClosedLoopController = m_drivingSpark.getClosedLoopController();
-    m_turningClosedLoopController = new PIDController(0.6, 0, 0.0);
+    m_turningClosedLoopController = new PIDController(0.5, 0, 0.0);
     m_turningClosedLoopController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Apply the respective configurations to the SPARKS. Reset parameters before

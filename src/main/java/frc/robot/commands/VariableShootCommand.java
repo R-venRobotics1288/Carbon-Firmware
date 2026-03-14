@@ -30,7 +30,7 @@ public class VariableShootCommand extends Command {
     public void execute() {
         m_distance = m_driveSubsystem.getPose().getTranslation().getDistance(kHubPosition);
         m_power = m_hopperSubsystem.getFlywheelPower(m_distance);
-        m_hopperSubsystem.setMotorSpeed(m_power, HopperConstants.kShooterFeederMotorSpeed);
+        m_hopperSubsystem.setMotorSpeed(m_power, HopperConstants.kShooterFeederMotorSpeed, 0);
     }
 
     @Override
