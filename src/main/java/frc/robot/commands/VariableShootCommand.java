@@ -40,9 +40,9 @@ public class VariableShootCommand extends Command {
         thetaController.setSetpoint(angle);
         double angleOverride = (thetaController.calculate((m_driveSubsystem.getHeading() / 360) * 2 * Math.PI))*2*Math.PI;
         m_driveSubsystem.setYawOverride(angleOverride);
-        System.out.println(angleOverride);
-        // m_distance = robotPose.getTranslation().getDistance(kHubPosition);
-        // System.out.println(m_distance);
+        //System.out.println(angleOverride);
+        m_distance = robotPose.getTranslation().getDistance(kHubPosition);
+        System.out.println(m_distance);
         // m_power = m_hopperSubsystem.getFlywheelPower(m_distance);
         // m_hopperSubsystem.setMotorSpeed(m_power, HopperConstants.kShooterFeederMotorSpeed);
     }
