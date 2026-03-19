@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import frc.robot.commands.VariableShootCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HopperConstants;
+import frc.robot.commands.VariableShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
@@ -51,7 +52,7 @@ public class RobotContainer {
   Trigger shootButton = new Trigger(() -> m_operatorController.getRightTriggerAxis() > 0.8);
   Trigger dumpButton = new Trigger(() -> m_operatorController.getLeftTriggerAxis() > 0.8);
   Trigger clearJamButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
-  // Trigger variableShootButton = new JoystickButton(m_operatorController, XboxController.Button.kX.value);
+  Trigger variableShootButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
   // Trigger climbButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
   // Trigger cancelButton = new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value);
 
@@ -126,11 +127,11 @@ public class RobotContainer {
     }, m_robotDrive));
 
     intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0, false));
-    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 1.0, true)); //TODO: tune delay!!
+    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 3.0, true)); //TODO: tune delay!!
     dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0, true));
     clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0, true));
 
-    // variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
+    variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
     // climbButton.onTrue(climbCommand);
     // cancelButton.onTrue(Commands.runOnce(climbCommand::cancel));
 }
