@@ -13,7 +13,6 @@ public final class Configs {
         public static final class MAXSwerveModule {
                 public static final SparkMaxConfig drivingConfig = new SparkMaxConfig();
                 public static final SparkMaxConfig turningConfig = new SparkMaxConfig();
-                public static final SparkMaxConfig flywheelConfig = new SparkMaxConfig();
 
                 static {
                         // Use module constants to calculate conversion factors and feed forward gain.
@@ -21,10 +20,10 @@ public final class Configs {
                                         / ModuleConstants.kDrivingMotorReduction;
                         double turningFactor = 2 * Math.PI;
                         double nominalVoltage = 12.0;
+                        double flywheelVelocityFeedForward = nominalVoltage / 6784;
                         // double drivingVelocityFeedForward = nominalVoltage /
                         // ModuleConstants.kDriveWheelFreeSpeedRps;
 
-                        double flywheelVelocityFeedForward = nominalVoltage / 6784;
 
                         drivingConfig
                                         .idleMode(IdleMode.kBrake)
@@ -38,16 +37,6 @@ public final class Configs {
                                         .pid(0.4, 0, 0.0)
                                         .outputRange(-1, 1);
                         // .feedForward.kV(drivingVelocityFeedForward);
-                        flywheelConfig
-                                        .idleMode(IdleMode.kCoast)
-                                        .smartCurrentLimit(60);
-                        flywheelConfig.encoder
-                                        .positionConversionFactor(drivingFactor) // meters
-                                        .velocityConversionFactor(drivingFactor / 60.0); // meters per second
-                        flywheelConfig.closedLoop
-                                        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                        .pid(1.2, 0, 0.0)
-                                        .outputRange(-1, 1).feedForward.kV(flywheelVelocityFeedForward);
 
                         turningConfig
                                         .idleMode(IdleMode.kBrake)
@@ -80,16 +69,22 @@ public final class Configs {
 
         public static final class HopperConfigs {
                 public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
-                public static final SparkFlexConfig shooterConfig = new SparkFlexConfig();
+                public static final SparkFlexConfig flywheelConfig = new SparkFlexConfig();
 
                 static {
+                        double nominalVoltage = 12.0;
+                        double flywheelVelocityFeedForward = nominalVoltage / 6784;
                         intakeConfig
                                         .idleMode(IdleMode.kCoast)
                                         .smartCurrentLimit(80);
 
-                        shooterConfig
+                        flywheelConfig
                                         .idleMode(IdleMode.kCoast)
-                                        .smartCurrentLimit(80);
+                                        .smartCurrentLimit(60);
+                        flywheelConfig.closedLoop
+                                        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                                        .pid(1, 0, 0.0)
+                                        .outputRange(-1, 1).feedForward.kV(flywheelVelocityFeedForward);
                 }
         }
 
