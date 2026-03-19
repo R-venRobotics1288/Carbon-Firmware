@@ -20,36 +20,40 @@ import frc.robot.Constants.HopperConstants;
 public class HopperSubsystem extends SubsystemBase {
 
     private final SparkFlex m_feederMotor;
-    private final SparkFlex m_flywheelSpark;
-    private final SparkFlex m_leftFlywheelMotor;
+    private final SparkFlex m_leftFlywheelSpark;
+    private final SparkFlex m_rightFlywheelSpark;
     private final SparkFlex m_agitatorMotor;
     private final RelativeEncoder m_agitatorEncoder;
-    private final RelativeEncoder m_flywheelEncoder;
+    private final RelativeEncoder m_leftFlywheelEncoder;
+    private final RelativeEncoder m_rightFlywheelEncoder;
     private final InterpolatingDoubleTreeMap m_shooterFlywheelPower;
     private PIDController agitatorPID;
 
-    private final SparkClosedLoopController m_flywheelClosedLoopController;
+    private final SparkClosedLoopController m_rightFlywheelClosedLoopController;
+    private final SparkClosedLoopController m_leftFlywheelClosedLoopController;
 
     public HopperSubsystem() {
         m_feederMotor = new SparkFlex(HopperConstants.kFeederCANID, MotorType.kBrushless);
 
 
-        m_flywheelSpark = new SparkFlex(HopperConstants.kRightFlywheelCANID, MotorType.kBrushless);
-        m_flywheelEncoder = m_flywheelSpark.getEncoder();
-        m_flywheelEncoder.setPosition(0);
-        m_flywheelClosedLoopController = m_flywheelSpark.getClosedLoopController();
-         m_flywheelSpark.configure(Configs.MAXSwerveModule.drivingConfig, ResetMode.kResetSafeParameters,
+        m_rightFlywheelSpark = new SparkFlex(HopperConstants.kRightFlywheelCANID, MotorType.kBrushless);
+        m_rightFlywheelEncoder = m_rightFlywheelSpark.getEncoder();
+        m_rightFlywheelEncoder.setPosition(0);
+        m_rightFlywheelClosedLoopController = m_rightFlywheelSpark.getClosedLoopController();
+        m_rightFlywheelSpark.configure(Configs.HopperConfigs.flywheelConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-        m_leftFlywheelMotor = new SparkFlex(HopperConstants.kLeftFlywheelCANID, MotorType.kBrushless);
+        m_leftFlywheelSpark = new SparkFlex(HopperConstants.kLeftFlywheelCANID, MotorType.kBrushless);
+        m_leftFlywheelEncoder = m_leftFlywheelSpark.getEncoder();
+        m_leftFlywheelEncoder.setPosition(0);
+        m_leftFlywheelClosedLoopController = m_leftFlywheelSpark.getClosedLoopController();
+        m_leftFlywheelSpark.configure(Configs.HopperConfigs.flywheelConfig, ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+
         m_agitatorMotor = new SparkFlex(HopperConstants.kAgitatorCANID, MotorType.kBrushless);
         m_agitatorEncoder = m_agitatorMotor.getEncoder();
 
         m_feederMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
-        m_flywheelSpark.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
-        m_leftFlywheelMotor.configure(HopperConfigs.shooterConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
         m_agitatorMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
@@ -64,8 +68,8 @@ public class HopperSubsystem extends SubsystemBase {
         setDefaultCommand(
                 runOnce(
                         () -> {
-                            m_flywheelSpark.disable();
-                            m_leftFlywheelMotor.disable();
+                            m_leftFlywheelSpark.disable();
+                            m_rightFlywheelSpark.disable();
                             m_feederMotor.disable();
                             m_agitatorMotor.disable();
                         })
@@ -90,8 +94,8 @@ public class HopperSubsystem extends SubsystemBase {
                         // feedback
                         run(
                                 () -> {
-                                    m_flywheelSpark.set(flywheelSpeed);
-                                    m_leftFlywheelMotor.set(-flywheelSpeed);
+                                    m_rightFlywheelSpark.set(flywheelSpeed);
+                                    m_leftFlywheelSpark.set(flywheelSpeed);
                                     double val = agitatorPID.calculate(m_agitatorEncoder.getVelocity());
                                     System.out.print(val);
                                     System.out.print(" : ");
@@ -107,9 +111,11 @@ public class HopperSubsystem extends SubsystemBase {
     }
 
     public void stopMotors() {
-        m_flywheelSpark.set(0);
+        m_rightFlywheelSpark.set(0);
+        m_leftFlywheelSpark.set(0);
         m_feederMotor.set(0);
-        m_flywheelSpark.stopMotor();
+        m_rightFlywheelSpark.stopMotor();
+        m_leftFlywheelSpark.stopMotor();
         m_feederMotor.stopMotor();
     }
 
@@ -118,7 +124,8 @@ public class HopperSubsystem extends SubsystemBase {
     }
 
     public void setMotorSpeed(double power, double kShooterFeederMotorSpeed) {
-        m_flywheelClosedLoopController.setSetpoint(kShooterFeederMotorSpeed, null);
+        m_rightFlywheelClosedLoopController.setSetpoint(power, null);
+        m_leftFlywheelClosedLoopController.setSetpoint(power, null);
         m_feederMotor.set(kShooterFeederMotorSpeed);
     }
 
