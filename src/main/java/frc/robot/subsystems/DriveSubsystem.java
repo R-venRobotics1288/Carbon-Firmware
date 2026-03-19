@@ -93,8 +93,8 @@ public class DriveSubsystem extends SubsystemBase {
                                                               // module feedforwards
         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic
                                         // drive trains
-            new PIDConstants(4.8, 0.0, 0.15), // Translation PID constants
-            new PIDConstants(4.3, 0.0, 0.15) // Rotation PID constants
+            new PIDConstants(4.7, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.25, 0.0, 0.0) // Rotation PID constants
         ),
         config, // The robot configuration
         () -> {
