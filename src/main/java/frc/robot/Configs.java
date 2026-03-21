@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -69,6 +70,7 @@ public final class Configs {
 
         public static final class HopperConfigs {
                 public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
+                public static final SparkMaxConfig agitatorConfig = new SparkMaxConfig();
                 public static final SparkFlexConfig flywheelConfig = new SparkFlexConfig();
 
                 static {
@@ -77,6 +79,13 @@ public final class Configs {
                         intakeConfig
                                         .idleMode(IdleMode.kCoast)
                                         .smartCurrentLimit(80);
+
+                        agitatorConfig
+                                        .idleMode(IdleMode.kCoast)
+                                        .smartCurrentLimit(60);
+                        agitatorConfig.encoder
+                                        .positionConversionFactor(1.0)
+                                        .velocityConversionFactor(1.0); // RPM
 
                         flywheelConfig
                                         .idleMode(IdleMode.kCoast)

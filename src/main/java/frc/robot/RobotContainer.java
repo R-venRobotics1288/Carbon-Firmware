@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 // import java.util.jar.Attributes.Name;
 
-// import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-// import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import frc.robot.commands.VariableShootCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HopperConstants;
+import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.VariableShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -53,16 +54,21 @@ public class RobotContainer {
 
   Trigger startButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
   Trigger intakeButton = new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value);
-  Trigger shootButton = new Trigger(() -> m_operatorController.getRightTriggerAxis() > 0.8);
+  Trigger variableShootButton = new Trigger(() -> m_operatorController.getRightTriggerAxis() > 0.8);
   Trigger dumpButton = new Trigger(() -> m_operatorController.getLeftTriggerAxis() > 0.8);
   Trigger clearJamButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
-  Trigger variableShootButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
-  // Trigger climbButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
-  // Trigger cancelButton = new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value);
+  Trigger shootButton = new JoystickButton(m_operatorController, XboxController.Button.kB.value);
+  Trigger autoAimButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
 
-  // public final SequentialCommandGroup climbCommand = new SequentialCommandGroup(
-        // new ClimberCommand(m_climber, ClimberConstants.kDesiredPosOne),  
-        // new ClimberCommand(m_climber, ClimberConstants.kRetractedDesiredPos));
+  // Trigger climbButton = new JoystickButton(m_operatorController,
+  // XboxController.Button.kLeftBumper.value);
+  // Trigger cancelButton = new JoystickButton(m_operatorController,
+  // XboxController.Button.kRightBumper.value);
+
+  // public final SequentialCommandGroup climbCommand = new
+  // SequentialCommandGroup(
+  // new ClimberCommand(m_climber, ClimberConstants.kDesiredPosOne),
+  // new ClimberCommand(m_climber, ClimberConstants.kRetractedDesiredPos));
 
   public Shuffle m_shuffle = new Shuffle();
 
@@ -74,18 +80,31 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    
+    new EventTrigger("Run Intake").whileTrue(
+        m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0));
+    new EventTrigger("Variable Shoot")
+        .whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
+    new EventTrigger("Variable Shoot Timed")
+        .whileTrue(Commands.sequence(new VariableShootCommand(m_hopper, m_robotDrive), Commands.waitSeconds(5)));
+    new EventTrigger("Shoot").whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed,
+        HopperConstants.kShooterFeederMotorSpeed, 2.0)); // TODO: tune delay!!
+    new EventTrigger("Cooler Shoot").onTrue(m_hopper.theCoolerShootCommand(HopperConstants.kShooterFlywheelMotorSpeed,
+        HopperConstants.kShooterFeederMotorSpeed, 2.0));
+    new EventTrigger("Dump").whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed,
+        HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0));
+    new EventTrigger("Auto Aim").whileTrue(new AutoAimCommand(m_robotDrive));
+
+    NamedCommands.registerCommand(null, getAutonomousCommand());
 
     // Configure the trigger bindings
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
-        () -> { 
+        () -> {
           double leftY = ShuffleValues.translationfiltery.calculate(m_driverController.getLeftY());
           double leftX = ShuffleValues.translationfilterx.calculate(m_driverController.getLeftX());
           double rightX = ShuffleValues.rotationfilter.calculate(m_driverController.getRightX());
           // Apply a round deadband, based on the x/y distance from the origin
-          double distanceFromZero =
-              Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // Pythagoras
+          double distanceFromZero = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // Pythagoras
           if (distanceFromZero < DriveConstants.kDriveDeadband) {
             leftX = 0;
             leftY = 0;
@@ -100,7 +119,7 @@ public class RobotContainer {
               -leftX,
               -rightX,
               DriveConstants.kfieldRelative);
-          },
+        },
         m_robotDrive));
 
     LimelightHelpers.SetRobotOrientation("limelight",
@@ -132,15 +151,19 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
 
-    intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0, false));
-    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, HopperConstants.kFlywheelFeederDelay, true));
-    dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0, true));
-    clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0, true));
-
+    intakeButton.whileTrue(
+        m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0));
     variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
+    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed,
+        HopperConstants.kShooterFeederMotorSpeed, 2.0)); // TODO: tune delay!!
+    dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed,
+        HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0));
+    clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0));
+    autoAimButton.whileTrue(new AutoAimCommand(m_robotDrive));
+
     // climbButton.onTrue(climbCommand);
     // cancelButton.onTrue(Commands.runOnce(climbCommand::cancel));
-}
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -159,40 +182,43 @@ public class RobotContainer {
     LimelightHelpers.SetRobotOrientation("limelight",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
-    if (limelightMeasurement.tagCount >= 2) { // Only trust measurement if we see multiple tags
+    if (limelightMeasurement.tagCount >= 1) { // Only trust measurement if we see multiple tags
       m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
       m_robotDrive.m_poseEstimator.addVisionMeasurement(
           limelightMeasurement.pose,
           limelightMeasurement.timestampSeconds);
     }
   }
-  
+
   Pose2d startPose = null;
+
   public Command getAutonomousCommand() {
     // This method loads the auto when it is called, however, it is recommended
     // to first load your paths/autos when code starts, then return the
     // pre-loaded auto/path
-    //return new RunCommand(() -> {
-    //  if (startPose == null) {
-    //    startPose = m_robotDrive.m_poseEstimator.getEstimatedPosition();
-    //    m_robotDrive.drive(0.0, -0.3, 0, false);
-    //    return;
-    //  }
-    //  Transform2d cur = m_robotDrive.m_poseEstimator.getEstimatedPosition().minus(startPose);
-    //  if (Math.abs(cur.getX()) >= 2 || Math.abs(cur.getY()) >= 2) {
-    //    m_robotDrive.drive(0.0, 0.0, 0, false);
-    //    return;
-    //  }
-    //  System.out.println("X, Y: " + cur.getX() + ", " + cur.getY());
-    //  m_robotDrive.drive(0.0, -0.4, 0, false);
-    //}, m_robotDrive);
+    // return new RunCommand(() -> {
+    // if (startPose == null) {
+    // startPose = m_robotDrive.m_poseEstimator.getEstimatedPosition();
+    // m_robotDrive.drive(0.0, -0.3, 0, false);
+    // return;
+    // }
+    // Transform2d cur =
+    // m_robotDrive.m_poseEstimator.getEstimatedPosition().minus(startPose);
+    // if (Math.abs(cur.getX()) >= 2 || Math.abs(cur.getY()) >= 2) {
+    // m_robotDrive.drive(0.0, 0.0, 0, false);
+    // return;
+    // }
+    // System.out.println("X, Y: " + cur.getX() + ", " + cur.getY());
+    // m_robotDrive.drive(0.0, -0.4, 0, false);
+    // }, m_robotDrive);
+
     return new PathPlannerAuto("test");
   }
 
   public void refresh_shuffleboard() {
     m_shuffle.refreshValue(m_robotDrive.m_frontLeft.getState().angle.getRadians(),
         m_robotDrive.m_frontLeft.getPosition().angle.getRadians());
-        
+
     m_shuffle.refreshValue(m_robotDrive.m_frontRight.getState().angle.getRadians(),
         m_robotDrive.m_frontRight.getPosition().angle.getRadians());
     m_field.setRobotPose(m_robotDrive.getPose());
