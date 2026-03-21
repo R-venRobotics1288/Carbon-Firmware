@@ -25,7 +25,7 @@ public class VariableShootCommand extends Command {
 
     @Override
     public void initialize() {
-        m_hopperSubsystem.setFeederMotorSpeed(HopperConstants.kShooterFeederMotorSpeed, 2.0);
+        m_hopperSubsystem.setFeederMotorSpeed(HopperConstants.kShooterFeederMotorSpeed, 2.0).schedule();
     }
 
     @Override
