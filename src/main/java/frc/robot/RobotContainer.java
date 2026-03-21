@@ -136,8 +136,8 @@ public class RobotContainer {
     }, m_robotDrive));
 
     intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0));
-    variableShootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 1.0)); //TODO: tune delay!!
-    shootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
+    variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
+    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 2.0)); //TODO: tune delay!!
     dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0));
     clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0));
     autoAimButton.whileTrue(new AutoAimCommand(m_robotDrive));

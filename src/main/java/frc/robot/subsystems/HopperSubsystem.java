@@ -5,6 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -22,7 +23,7 @@ public class HopperSubsystem extends SubsystemBase {
     private final SparkFlex m_feederMotor;
     private final SparkFlex m_leftFlywheelSpark;
     private final SparkFlex m_rightFlywheelSpark;
-    private final SparkFlex m_agitatorMotor;
+    private final SparkMax m_agitatorMotor;
     private final RelativeEncoder m_agitatorEncoder;
     private final RelativeEncoder m_leftFlywheelEncoder;
     private final RelativeEncoder m_rightFlywheelEncoder;
@@ -50,12 +51,12 @@ public class HopperSubsystem extends SubsystemBase {
         m_leftFlywheelSpark.configure(Configs.HopperConfigs.flywheelConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-        m_agitatorMotor = new SparkFlex(HopperConstants.kAgitatorCANID, MotorType.kBrushless);
+        m_agitatorMotor = new SparkMax(HopperConstants.kAgitatorCANID, MotorType.kBrushless);
         m_agitatorEncoder = m_agitatorMotor.getEncoder();
 
         m_feederMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        m_agitatorMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
+        m_agitatorMotor.configure(HopperConfigs.agitatorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
 
         m_shooterFlywheelPower = new InterpolatingDoubleTreeMap(); //In Meters
@@ -72,12 +73,12 @@ public class HopperSubsystem extends SubsystemBase {
                             m_leftFlywheelSpark.disable();
                             m_rightFlywheelSpark.disable();
                             m_feederMotor.disable();
-                            agitatorPID.setSetpoint(HopperConstants.kAgitatorMotorSpeed);
+                            agitatorPID.setSetpoint(HopperConstants.kAgitatorMotorSpeed * HopperConstants.agitatorFactor);
                         })
-                        .andThen(Commands.sequence(
-                            Commands.waitSeconds(HopperConstants.agitatorSwitchingDelay).andThen(runOnce(() -> agitatorPID.setSetpoint(-120))),
-                            Commands.waitSeconds(HopperConstants.agitatorSwitchingDelay).andThen(runOnce(() -> agitatorPID.setSetpoint(120)))
-                        ))
+                        //.andThen(Commands.sequence(
+                            //Commands.waitSeconds(HopperConstants.agitatorSwitchingDelay).andThen(runOnce(() -> agitatorPID.setSetpoint(-HopperConstants.kAgitatorMotorSpeed))),
+                            //Commands.waitSeconds(HopperConstants.agitatorSwitchingDelay).andThen(runOnce(() -> agitatorPID.setSetpoint(HopperConstants.kAgitatorMotorSpeed)))
+                        //))
                         .withName("Idle"));
 
     }
@@ -95,7 +96,6 @@ public class HopperSubsystem extends SubsystemBase {
                             System.out.print(val);
                             System.out.print(" : ");
                             System.out.println(m_agitatorEncoder.getVelocity());
-                            m_agitatorMotor.setVoltage(MathUtil.clamp(val, 0.0, 12));
                         }),
 
                 // Wait until the shooter has reached the setpoint, and then run the feeder
@@ -118,16 +118,21 @@ public class HopperSubsystem extends SubsystemBase {
         return m_shooterFlywheelPower.get(distance);
     }
 
-    public void setMotorSpeed(double power, double kShooterFeederMotorSpeed) {
+    public void setFlywheelMotorSpeed(double power) {
         m_rightFlywheelClosedLoopController.setSetpoint(power, null);
         m_leftFlywheelClosedLoopController.setSetpoint(power, null);
-        m_feederMotor.set(kShooterFeederMotorSpeed);
+    }
+
+    public void setFeederMotorSpeed(double feederSpeed, double delay) {
+        Commands.waitSeconds(delay).andThen(() -> {
+                    m_feederMotor.set(feederSpeed);
+                });
     }
 
     @Override
     public void periodic() {
         double val = agitatorPID.calculate(m_agitatorEncoder.getVelocity());
-        m_agitatorMotor.setVoltage(MathUtil.clamp(val, -24, 24));
+        m_agitatorMotor.setVoltage(MathUtil.clamp(val, -12, 12));
     }
 
 }
