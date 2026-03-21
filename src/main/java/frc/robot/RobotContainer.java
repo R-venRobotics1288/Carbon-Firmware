@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import frc.robot.commands.VariableShootCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HopperConstants;
+import frc.robot.commands.AutoAimCommand;
 import frc.robot.commands.VariableShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -53,10 +54,12 @@ public class RobotContainer {
 
   Trigger startButton = new JoystickButton(m_driverController, XboxController.Button.kStart.value);
   Trigger intakeButton = new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value);
-  Trigger shootButton = new Trigger(() -> m_operatorController.getRightTriggerAxis() > 0.8);
+  Trigger variableShootButton = new Trigger(() -> m_operatorController.getRightTriggerAxis() > 0.8);
   Trigger dumpButton = new Trigger(() -> m_operatorController.getLeftTriggerAxis() > 0.8);
   Trigger clearJamButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
-  Trigger variableShootButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
+  Trigger shootButton = new JoystickButton(m_operatorController, XboxController.Button.kB.value);
+  Trigger autoAimButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
+
   // Trigger climbButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
   // Trigger cancelButton = new JoystickButton(m_operatorController, XboxController.Button.kRightBumper.value);
 
@@ -132,12 +135,13 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }, m_robotDrive));
 
-    intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0, false));
-    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 3.0, true)); //TODO: tune delay!!
-    dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0, true));
-    clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0, true));
-
+    intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0));
     variableShootButton.whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
+    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 2.0)); //TODO: tune delay!!
+    dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0));
+    clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0));
+    autoAimButton.whileTrue(new AutoAimCommand(m_robotDrive));
+
     // climbButton.onTrue(climbCommand);
     // cancelButton.onTrue(Commands.runOnce(climbCommand::cancel));
 }
@@ -159,7 +163,7 @@ public class RobotContainer {
     LimelightHelpers.SetRobotOrientation("limelight",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
-    if (limelightMeasurement.tagCount >= 2) { // Only trust measurement if we see multiple tags
+    if (limelightMeasurement.tagCount >= 1) { // Only trust measurement if we see multiple tags
       m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
       m_robotDrive.m_poseEstimator.addVisionMeasurement(
           limelightMeasurement.pose,
