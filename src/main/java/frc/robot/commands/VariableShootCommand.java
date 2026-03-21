@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import java.io.Console;
+// import java.io.Console;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,7 +15,7 @@ public class VariableShootCommand extends Command {
     private HopperSubsystem m_hopperSubsystem;
     private DriveSubsystem m_driveSubsystem;
     private double m_distance;
-    private double m_power;
+    // private double m_power;
     private final Translation2d kHubPosition;
     private PIDController thetaController;
 

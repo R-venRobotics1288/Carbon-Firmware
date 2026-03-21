@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import java.util.jar.Attributes.Name;
+// import java.util.jar.Attributes.Name;
 
-import com.pathplanner.lib.auto.NamedCommands;
+// import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.events.EventTrigger;
+// import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
@@ -133,7 +133,7 @@ public class RobotContainer {
     }, m_robotDrive));
 
     intakeButton.whileTrue(m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0, false));
-    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, 3.0, true)); //TODO: tune delay!!
+    shootButton.whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed, HopperConstants.kShooterFeederMotorSpeed, HopperConstants.kFlywheelFeederDelay, true));
     dumpButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0, true));
     clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0, true));
 

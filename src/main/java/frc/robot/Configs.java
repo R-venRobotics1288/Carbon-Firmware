@@ -19,8 +19,8 @@ public final class Configs {
                         double drivingFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
                                         / ModuleConstants.kDrivingMotorReduction;
                         double turningFactor = 2 * Math.PI;
-                        double nominalVoltage = 12.0;
-                        double flywheelVelocityFeedForward = nominalVoltage / 6784;
+                        // double nominalVoltage = 12.0;
+                        // double flywheelVelocityFeedForward = nominalVoltage / 6784;
                         // double drivingVelocityFeedForward = nominalVoltage /
                         // ModuleConstants.kDriveWheelFreeSpeedRps;
 

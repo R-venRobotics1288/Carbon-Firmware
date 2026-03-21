@@ -100,6 +100,7 @@ public final class Constants {
     public static final double kReverseIntakeFlywheelMotorSpeed = -0.3; //TODO: figure out correct speed
     public static final double kReverseIntakeFeederMotorSpeed = 0.4; //TODO: figure out correct speed
     public static final double kAgitatorMotorSpeed = 60; //RPM
+    public static final double kFlywheelFeederDelay = 3.0; // Seconds // TODO: tune delay here!!
 
     public static final Translation2d kBlueHubPosition = new Translation2d(4.625, 4.035);
     public static final Translation2d kRedHubPosition = new Translation2d(11.915, 4.035);
