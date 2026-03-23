@@ -90,15 +90,15 @@ public class HopperSubsystem extends SubsystemBase {
 
     }
 
-    public Command shootCommand(double flywheelSpeed, double feederMotorSpeed, double delay) {
+    public Command shootCommand(double feederMotorSpeed, double delay) {
         return Commands.parallel(
 
                 // Run the shooter flywheel at the desired setpoint using feedforward and
                 // feedback
                 run(
                         () -> {
-                            m_rightFlywheelClosedLoopController.setSetpoint(flywheelSpeed, ControlType.kVelocity);
-                            m_leftFlywheelClosedLoopController.setSetpoint(flywheelSpeed, ControlType.kVelocity);
+                            m_rightFlywheelClosedLoopController.setSetpoint(ShuffleValues.flywheel_speed, ControlType.kVelocity);
+                            m_leftFlywheelClosedLoopController.setSetpoint(ShuffleValues.flywheel_speed, ControlType.kVelocity);
                         }),
 
                 // Wait until the shooter has reached the setpoint, and then run the feeder
