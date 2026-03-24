@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -19,8 +20,8 @@ public final class Configs {
                         double drivingFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
                                         / ModuleConstants.kDrivingMotorReduction;
                         double turningFactor = 2 * Math.PI;
-                        double nominalVoltage = 12.0;
-                        double flywheelVelocityFeedForward = nominalVoltage / 6784;
+                        // double nominalVoltage = 12.0;
+                        // double flywheelVelocityFeedForward = nominalVoltage / 6784;
                         // double drivingVelocityFeedForward = nominalVoltage /
                         // ModuleConstants.kDriveWheelFreeSpeedRps;
 
@@ -69,6 +70,7 @@ public final class Configs {
 
         public static final class HopperConfigs {
                 public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
+                public static final SparkMaxConfig agitatorConfig = new SparkMaxConfig();
                 public static final SparkFlexConfig flywheelConfig = new SparkFlexConfig();
 
                 static {
@@ -78,12 +80,19 @@ public final class Configs {
                                         .idleMode(IdleMode.kCoast)
                                         .smartCurrentLimit(80);
 
+                        agitatorConfig
+                                        .idleMode(IdleMode.kCoast)
+                                        .smartCurrentLimit(60);
+                        agitatorConfig.encoder
+                                        .positionConversionFactor(1.0)
+                                        .velocityConversionFactor(1.0); // RPM
+
                         flywheelConfig
                                         .idleMode(IdleMode.kCoast)
                                         .smartCurrentLimit(60);
                         flywheelConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                        .pid(1, 0, 0.0)
+                                        .pid(10, 0, 0.0)
                                         .outputRange(-1, 1).feedForward.kV(flywheelVelocityFeedForward);
                 }
         }
