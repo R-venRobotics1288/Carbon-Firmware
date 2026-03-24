@@ -10,6 +10,7 @@ public class ShuffleValues {
   public static double kDriveDeadband = 0.075;
   public static double slewrate_translation = 0.5;
   public static double slewrate_rotation = 2.2;
+	public static double flywheel_speed = 3392; //	rpm
 
   public static SlewRateLimiter translationfilterx = new SlewRateLimiter(ShuffleValues.slewrate_translation);
   public static SlewRateLimiter translationfiltery = new SlewRateLimiter(ShuffleValues.slewrate_translation);

@@ -60,9 +60,13 @@ public class HopperSubsystem extends SubsystemBase {
                 PersistMode.kPersistParameters);
 
         m_shooterFlywheelPower = new InterpolatingDoubleTreeMap(); // In Meters
-        m_shooterFlywheelPower.put(2.51, 0.5);
-        m_shooterFlywheelPower.put(3.46, 0.55);
-        m_shooterFlywheelPower.put(4.83, 0.65);
+
+        //speeds are measured in rpm, max value is 6784
+
+        //TODO: add shuffleboard command for adjusting shooter speed
+        m_shooterFlywheelPower.put(2.51, 0.5 * 6784);
+        m_shooterFlywheelPower.put(3.46, 0.55 * 6784);
+        m_shooterFlywheelPower.put(4.83, 0.65 * 6784);
 
         // agitatorPID = new PIDController(0.0025, 0.006, 0.00015);
         agitatorPID = new PIDController(0.0025, 0.0, 0.0);
@@ -86,15 +90,15 @@ public class HopperSubsystem extends SubsystemBase {
 
     }
 
-    public Command shootCommand(double flywheelSpeed, double feederMotorSpeed, double delay) {
+    public Command shootCommand(double feederMotorSpeed, double delay) {
         return Commands.parallel(
 
                 // Run the shooter flywheel at the desired setpoint using feedforward and
                 // feedback
                 run(
                         () -> {
-                            m_rightFlywheelSpark.set(flywheelSpeed);
-                            m_leftFlywheelSpark.set(flywheelSpeed);
+                            m_rightFlywheelClosedLoopController.setSetpoint(ShuffleValues.flywheel_speed, ControlType.kVelocity);
+                            m_leftFlywheelClosedLoopController.setSetpoint(ShuffleValues.flywheel_speed, ControlType.kVelocity);
                         }),
 
                 // Wait until the shooter has reached the setpoint, and then run the feeder
@@ -111,8 +115,8 @@ public class HopperSubsystem extends SubsystemBase {
                 // feedback
                 runOnce(
                         () -> {
-                            m_rightFlywheelSpark.set(flywheelSpeed);
-                            m_leftFlywheelSpark.set(flywheelSpeed);
+                            m_rightFlywheelClosedLoopController.setSetpoint(flywheelSpeed, ControlType.kVelocity);
+                            m_leftFlywheelClosedLoopController.setSetpoint(flywheelSpeed, ControlType.kVelocity);
                         }),
 
                 // Wait until the shooter has reached the setpoint, and then run the feeder
@@ -137,8 +141,8 @@ public class HopperSubsystem extends SubsystemBase {
     }
 
     public void setFlywheelMotorSpeed(double power) {
-        m_rightFlywheelSpark.set(power);
-        m_leftFlywheelSpark.set(power);
+        m_rightFlywheelClosedLoopController.setSetpoint(power, ControlType.kVelocity);
+        m_leftFlywheelClosedLoopController.setSetpoint(power, ControlType.kVelocity);
     }
 
     public Command setFeederMotorSpeed(double feederSpeed, double delay) {

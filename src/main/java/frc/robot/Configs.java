@@ -20,8 +20,8 @@ public final class Configs {
                         double drivingFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
                                         / ModuleConstants.kDrivingMotorReduction;
                         double turningFactor = 2 * Math.PI;
-                        double nominalVoltage = 12.0;
-                        double flywheelVelocityFeedForward = nominalVoltage / 6784;
+                        // double nominalVoltage = 12.0;
+                        // double flywheelVelocityFeedForward = nominalVoltage / 6784;
                         // double drivingVelocityFeedForward = nominalVoltage /
                         // ModuleConstants.kDriveWheelFreeSpeedRps;
 
@@ -92,7 +92,7 @@ public final class Configs {
                                         .smartCurrentLimit(60);
                         flywheelConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                        .pid(1, 0, 0.0)
+                                        .pid(10, 0, 0.0)
                                         .outputRange(-1, 1).feedForward.kV(flywheelVelocityFeedForward);
                 }
         }

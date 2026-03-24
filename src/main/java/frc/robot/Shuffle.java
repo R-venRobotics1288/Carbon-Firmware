@@ -48,6 +48,11 @@ public final class Shuffle {
       .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 0.1,
           "max", 10))
       .getEntry();
+	private GenericEntry flywheelSpeed = shuffleTab.addPersistent("Flywheel Speed",
+      ShuffleValues.flywheel_speed)
+      .withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", 1,
+          "max", 6784))
+      .getEntry();
 public void refreshValue(double desiredpos, double actualpos) {
 if (ShuffleValues.SHUFFLE_MANAGER_ENABLED) {
 
@@ -59,6 +64,11 @@ if (ShuffleValues.SHUFFLE_MANAGER_ENABLED) {
       Double maxSpeedRotationDouble = maxRot.getDouble(ShuffleValues.kMaxAngularSpeed);
       if (ShuffleValues.kMaxAngularSpeed != maxSpeedRotationDouble) {
         ShuffleValues.kMaxAngularSpeed = maxSpeedRotationDouble;
+      }
+
+			Double flywheelSpeedDouble = maxRot.getDouble(ShuffleValues.flywheel_speed);
+      if (ShuffleValues.flywheel_speed != flywheelSpeedDouble) {
+        ShuffleValues.flywheel_speed = flywheelSpeedDouble;
       }
 
       Double slewTranslationDouble = slew.getDouble(ShuffleValues.slewrate_translation);
