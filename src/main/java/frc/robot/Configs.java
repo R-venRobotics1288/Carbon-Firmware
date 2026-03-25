@@ -92,7 +92,8 @@ public final class Configs {
                                         .smartCurrentLimit(60);
                         flywheelConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                        .pid(10, 0, 0.0)
+                                        //TODO: maybe tune this pid a little, it's still oscillating a bit
+                                        .pid(0.0015, 0, 0.0)
                                         .outputRange(-1, 1).feedForward.kV(flywheelVelocityFeedForward);
                 }
         }

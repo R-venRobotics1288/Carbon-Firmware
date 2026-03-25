@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Configs.HopperConfigs;
 import frc.robot.Constants.HopperConstants;
+import frc.robot.ShuffleValues;
 
 public class HopperSubsystem extends SubsystemBase {
 
@@ -90,7 +91,7 @@ public class HopperSubsystem extends SubsystemBase {
 
     }
 
-    public Command shootCommand(double feederMotorSpeed, double delay) {
+    public Command shootCommand(double flywheelSpeed, double feederMotorSpeed, double delay) {
         return Commands.parallel(
 
                 // Run the shooter flywheel at the desired setpoint using feedforward and

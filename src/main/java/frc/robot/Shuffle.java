@@ -66,7 +66,7 @@ if (ShuffleValues.SHUFFLE_MANAGER_ENABLED) {
         ShuffleValues.kMaxAngularSpeed = maxSpeedRotationDouble;
       }
 
-			Double flywheelSpeedDouble = maxRot.getDouble(ShuffleValues.flywheel_speed);
+			Double flywheelSpeedDouble = flywheelSpeed.getDouble(ShuffleValues.flywheel_speed);
       if (ShuffleValues.flywheel_speed != flywheelSpeedDouble) {
         ShuffleValues.flywheel_speed = flywheelSpeedDouble;
       }
