@@ -34,6 +34,7 @@ public class VariableShootCommand extends Command {
         System.out.println(m_distance);
         m_power = m_hopperSubsystem.getFlywheelPower(m_distance);
         m_hopperSubsystem.setFlywheelMotorSpeed(m_power);
+        m_hopperSubsystem.runAgitator();
     }
 
     @Override

@@ -152,4 +152,8 @@ public class HopperSubsystem extends SubsystemBase {
             m_feederMotor.set(feederSpeed);
         });
     }
+
+    public void runAgitator() {
+        m_agitatorClosedLoopController.setSetpoint(HopperConstants.kAgitatorMotorSpeed * HopperConstants.agitatorFactor, ControlType.kVelocity);
+    }
 }
