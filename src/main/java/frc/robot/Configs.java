@@ -93,7 +93,7 @@ public final class Configs {
                         flywheelConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                                         //TODO: maybe tune this pid a little, it's still oscillating a bit
-                                        .pid(0.0015, 0, 0.0)
+                                        .pid(0.001, 0, 0.0)
                                         .outputRange(-1, 1).feedForward.kV(flywheelVelocityFeedForward);
                 }
         }
