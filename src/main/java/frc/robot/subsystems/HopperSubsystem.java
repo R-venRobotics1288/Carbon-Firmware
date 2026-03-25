@@ -65,9 +65,9 @@ public class HopperSubsystem extends SubsystemBase {
         //speeds are measured in rpm, max value is 6784
 
         //TODO: add shuffleboard command for adjusting shooter speed
-        m_shooterFlywheelPower.put(2.51, 0.5 * 6784);
-        m_shooterFlywheelPower.put(3.46, 0.55 * 6784);
-        m_shooterFlywheelPower.put(4.83, 0.65 * 6784);
+        m_shooterFlywheelPower.put(2.227, 3100.0);
+        m_shooterFlywheelPower.put( 3.208, 3600.0);
+        m_shooterFlywheelPower.put( 4.300, 3800.0);
 
         // agitatorPID = new PIDController(0.0025, 0.006, 0.00015);
         agitatorPID = new PIDController(0.0025, 0.0, 0.0);
