@@ -86,6 +86,10 @@ public final class Configs {
                         agitatorConfig.encoder
                                         .positionConversionFactor(1.0)
                                         .velocityConversionFactor(1.0); // RPM
+                        agitatorConfig.closedLoop
+                                        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                                        .pid(0.0003, 0, 0.0)
+                                        .outputRange(-1, 1).feedForward.kV(flywheelVelocityFeedForward);
 
                         flywheelConfig
                                         .idleMode(IdleMode.kCoast)

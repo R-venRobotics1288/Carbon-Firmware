@@ -34,6 +34,7 @@ public class HopperSubsystem extends SubsystemBase {
 
     private final SparkClosedLoopController m_rightFlywheelClosedLoopController;
     private final SparkClosedLoopController m_leftFlywheelClosedLoopController;
+    private final SparkClosedLoopController m_agitatorClosedLoopController;
 
     public HopperSubsystem() {
         m_feederMotor = new SparkFlex(HopperConstants.kFeederCANID, MotorType.kBrushless);
@@ -54,6 +55,8 @@ public class HopperSubsystem extends SubsystemBase {
 
         m_agitatorMotor = new SparkMax(HopperConstants.kAgitatorCANID, MotorType.kBrushless);
         m_agitatorEncoder = m_agitatorMotor.getEncoder();
+        m_agitatorClosedLoopController = m_agitatorMotor.getClosedLoopController();
+
 
         m_feederMotor.configure(HopperConfigs.intakeConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
@@ -69,17 +72,13 @@ public class HopperSubsystem extends SubsystemBase {
         m_shooterFlywheelPower.put( 3.208, 3600.0);
         m_shooterFlywheelPower.put( 4.300, 3800.0);
 
-        // agitatorPID = new PIDController(0.0025, 0.006, 0.00015);
-        agitatorPID = new PIDController(0.0025, 0.0, 0.0);
-
         setDefaultCommand(
                 runOnce(
                         () -> {
                             m_leftFlywheelSpark.disable();
                             m_rightFlywheelSpark.disable();
                             m_feederMotor.disable();
-                            agitatorPID
-                                    .setSetpoint(HopperConstants.kAgitatorMotorSpeed * HopperConstants.agitatorFactor);
+                            m_agitatorMotor.disable();
                         })
                         // .andThen(Commands.sequence(
                         // Commands.waitSeconds(HopperConstants.agitatorSwitchingDelay).andThen(runOnce(()
@@ -105,6 +104,7 @@ public class HopperSubsystem extends SubsystemBase {
                 // Wait until the shooter has reached the setpoint, and then run the feeder
                 Commands.waitSeconds(delay).andThen(() -> {
                     m_feederMotor.set(feederMotorSpeed);
+                    m_agitatorClosedLoopController.setSetpoint(HopperConstants.kAgitatorMotorSpeed * HopperConstants.agitatorFactor, ControlType.kVelocity);
                 }))
                 .withName("Shoot");
     }
@@ -123,6 +123,7 @@ public class HopperSubsystem extends SubsystemBase {
                 // Wait until the shooter has reached the setpoint, and then run the feeder
                 Commands.waitSeconds(delay).andThen(() -> {
                     m_feederMotor.set(feederMotorSpeed);
+                    m_agitatorClosedLoopController.setSetpoint(HopperConstants.kAgitatorMotorSpeed * HopperConstants.agitatorFactor, ControlType.kVelocity);
                 }),
                 Commands.waitSeconds(5))
                 .withName("Cooler Shoot");
@@ -151,11 +152,4 @@ public class HopperSubsystem extends SubsystemBase {
             m_feederMotor.set(feederSpeed);
         });
     }
-
-    @Override
-    public void periodic() {
-        double val = agitatorPID.calculate(m_agitatorEncoder.getVelocity());
-        m_agitatorMotor.setVoltage(MathUtil.clamp(val, -12, 12));
-    }
-
 }
