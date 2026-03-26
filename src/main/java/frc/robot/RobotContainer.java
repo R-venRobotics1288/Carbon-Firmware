@@ -122,7 +122,7 @@ public class RobotContainer {
         },
         m_robotDrive));
 
-    LimelightHelpers.SetRobotOrientation("limelight",
+    LimelightHelpers.SetRobotOrientation("",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
     m_robotDrive.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
@@ -130,6 +130,7 @@ public class RobotContainer {
         limelightMeasurement.pose,
         limelightMeasurement.timestampSeconds);
     SmartDashboard.putData("Field", m_field);
+    LimelightHelpers.SetIMUMode("", 4);
   }
 
   /**
@@ -179,7 +180,7 @@ public class RobotContainer {
 
   public void updateOdometry() {
     m_robotDrive.periodic();
-    LimelightHelpers.SetRobotOrientation("limelight",
+    LimelightHelpers.SetRobotOrientation("",
         m_robotDrive.m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
     if (limelightMeasurement.tagCount >= 1) { // Only trust measurement if we see multiple tags
