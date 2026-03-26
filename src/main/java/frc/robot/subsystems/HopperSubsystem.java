@@ -109,6 +109,18 @@ public class HopperSubsystem extends SubsystemBase {
                 .withName("Shoot");
     }
 
+    public Command fullSpeedDump(){
+        return Commands.sequence(
+            run(
+                ()->{
+                    System.out.println("Running command");
+                    m_feederMotor.set(1);
+                    m_rightFlywheelSpark.set(-1);
+                    m_leftFlywheelSpark.set(-1);
+            })
+        );
+    }
+
     public Command theCoolerShootCommand(double flywheelSpeed, double feederMotorSpeed, double delay) {
         return Commands.sequence(
 

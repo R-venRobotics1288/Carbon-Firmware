@@ -59,6 +59,7 @@ public class RobotContainer {
   Trigger clearJamButton = new JoystickButton(m_operatorController, XboxController.Button.kLeftBumper.value);
   Trigger shootButton = new JoystickButton(m_operatorController, XboxController.Button.kB.value);
   Trigger autoAimButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
+  Trigger fullSpeedDump = new JoystickButton(m_operatorController, XboxController.Button.kX.value);
 
   // Trigger climbButton = new JoystickButton(m_operatorController,
   // XboxController.Button.kLeftBumper.value);
@@ -160,6 +161,7 @@ public class RobotContainer {
         HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0));
     clearJamButton.whileTrue(m_hopper.shootCommand(HopperConstants.kReverseIntakeFlywheelMotorSpeed, 0.0, 5.0));
     autoAimButton.whileTrue(new AutoAimCommand(m_robotDrive));
+    fullSpeedDump.whileTrue(m_hopper.fullSpeedDump());
 
     // climbButton.onTrue(climbCommand);
     // cancelButton.onTrue(Commands.runOnce(climbCommand::cancel));
