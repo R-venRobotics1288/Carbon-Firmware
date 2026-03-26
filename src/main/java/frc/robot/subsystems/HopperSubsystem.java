@@ -68,9 +68,9 @@ public class HopperSubsystem extends SubsystemBase {
         //speeds are measured in rpm, max value is 6784
 
         //TODO: add shuffleboard command for adjusting shooter speed
-        m_shooterFlywheelPower.put(7.662, 3000.0);
-        m_shooterFlywheelPower.put( 8.931, 3200.0);
-        m_shooterFlywheelPower.put( 9.407, 3000.0);
+        m_shooterFlywheelPower.put(9.186, 3200.0);
+        m_shooterFlywheelPower.put( 10.171, 3450.0);
+        m_shooterFlywheelPower.put( 11.402, 4000.0);
 
         setDefaultCommand(
                 runOnce(
@@ -150,6 +150,7 @@ public class HopperSubsystem extends SubsystemBase {
     public Command setFeederMotorSpeed(double feederSpeed, double delay) {
         return Commands.waitSeconds(delay).andThen(() -> {
             m_feederMotor.set(feederSpeed);
+            runAgitator();
         });
     }
 

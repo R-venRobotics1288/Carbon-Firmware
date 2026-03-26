@@ -82,11 +82,11 @@ public class RobotContainer {
   public RobotContainer() {
     new EventTrigger("Run Intake").whileTrue(
         m_hopper.shootCommand(HopperConstants.kIntakeFlywheelMotorSpeed, HopperConstants.kIntakeFeederMotorSpeed, 0.0));
-    new EventTrigger("Variable Shoot")
-        .whileTrue(new VariableShootCommand(m_hopper, m_robotDrive));
-    new EventTrigger("Variable Shoot Timed")
-        .whileTrue(Commands.sequence(new VariableShootCommand(m_hopper, m_robotDrive), Commands.waitSeconds(5)));
-    new EventTrigger("Shoot").whileTrue(m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed,
+    NamedCommands.registerCommand("Variable Shoot",
+        (new VariableShootCommand(m_hopper, m_robotDrive)));
+   NamedCommands.registerCommand("Variable Shoot Timed",
+        (Commands.sequence(new VariableShootCommand(m_hopper, m_robotDrive), Commands.waitSeconds(2))));
+    NamedCommands.registerCommand("Shoot", m_hopper.shootCommand(HopperConstants.kShooterFlywheelMotorSpeed,
         HopperConstants.kShooterFeederMotorSpeed, 2.0)); // TODO: tune delay!!
     new EventTrigger("Cooler Shoot").onTrue(m_hopper.theCoolerShootCommand(HopperConstants.kShooterFlywheelMotorSpeed,
         HopperConstants.kShooterFeederMotorSpeed, 2.0));
