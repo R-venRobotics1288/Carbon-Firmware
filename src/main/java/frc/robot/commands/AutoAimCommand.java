@@ -15,7 +15,7 @@ public class AutoAimCommand extends Command {
 
     public AutoAimCommand(DriveSubsystem driveSubsystem) {
         m_driveSubsystem = driveSubsystem;
-        kHubPosition = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? HopperConstants.kRedHubPosition : HopperConstants.kBlueHubPosition;
+        kHubPosition = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red ? HopperConstants.kRedHubPosition : HopperConstants.kBlueHubPosition;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class AutoAimCommand extends Command {
         Pose2d robotPose = m_driveSubsystem.getPose();
         double angle = Math.atan2(kHubPosition.getY() - robotPose.getY(), kHubPosition.getX() - robotPose.getX());
         thetaController.setSetpoint(angle);
-        double angleOverride = (thetaController.calculate((m_driveSubsystem.getHeading() / 360) * 2 * Math.PI))*2*Math.PI;
+        double angleOverride = thetaController.calculate(m_driveSubsystem.getPose().getRotation().getRadians());
         m_driveSubsystem.setYawOverride(angleOverride);
         //System.out.println(angleOverride);
     }

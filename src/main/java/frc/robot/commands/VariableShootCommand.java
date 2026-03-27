@@ -18,7 +18,7 @@ public class VariableShootCommand extends Command {
     public VariableShootCommand(HopperSubsystem hopperSubsystem, DriveSubsystem driveSubsystem) {
         m_hopperSubsystem = hopperSubsystem;
         m_driveSubsystem = driveSubsystem;
-        kHubPosition = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? HopperConstants.kRedHubPosition : HopperConstants.kBlueHubPosition;
+        kHubPosition = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red ? HopperConstants.kRedHubPosition : HopperConstants.kBlueHubPosition;
         addRequirements(hopperSubsystem);
     }
 
