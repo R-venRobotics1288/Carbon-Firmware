@@ -20,7 +20,7 @@ public class AutoAimCommand extends Command {
 
     @Override
     public void initialize() {
-        thetaController = new PIDController(0.075, 0, 0.0);
+        thetaController = new PIDController(0.47, 0, 0.0); // TODO: changed from 0.075 to 0.47 per Jason
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         thetaController.setTolerance(2 * Math.PI * 5/360);
     }
