@@ -99,7 +99,7 @@ public final class Constants {
     public static final double kShooterFeederMotorSpeed = 0.6;
     public static final double kReverseIntakeFlywheelMotorSpeed = -0.3 * 6784; //TODO: figure out correct speed
     public static final double kReverseIntakeFeederMotorSpeed = 0.4; //TODO: figure out correct speed
-    public static final double kAgitatorMotorSpeed = 2; //RPS
+    public static final double kAgitatorMotorSpeed = -2; //RPS
 
     public static final double agitatorFactor = 9*60;
 
