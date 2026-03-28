@@ -27,7 +27,7 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(22);
     // Distance between front and rear wheels on robot
     public static final double kWheelBase = Units.inchesToMeters(22);
-    public static final double kDriveDeadband = 0.09;
+    public static final double kDriveDeadband = 0.05 ;
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
       new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -94,7 +94,7 @@ public final class Constants {
     public static final int kAgitatorCANID = 19;
 
     public static final double kIntakeFlywheelMotorSpeed = 0.50 * 6784;
-    public static final double kIntakeFeederMotorSpeed = -0.50;
+    public static final double kIntakeFeederMotorSpeed = -0.750;
     public static final double kShooterFlywheelMotorSpeed = 0.65 * 6784;
     public static final double kShooterFeederMotorSpeed = 0.6;
     public static final double kReverseIntakeFlywheelMotorSpeed = -0.3 * 6784; //TODO: figure out correct speed
