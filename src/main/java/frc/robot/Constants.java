@@ -93,8 +93,8 @@ public final class Constants {
     public static final int kLeftFlywheelCANID = 18;
     public static final int kAgitatorCANID = 19;
 
-    public static final double kIntakeFlywheelMotorSpeed = 0.50 * 6784;
-    public static final double kIntakeFeederMotorSpeed = -0.750;
+    public static final double kIntakeFlywheelMotorSpeed = 0.60 * 6784;
+    public static final double kIntakeFeederMotorSpeed = -0.75;
     public static final double kShooterFlywheelMotorSpeed = 0.65 * 6784;
     public static final double kShooterFeederMotorSpeed = 0.6;
     public static final double kReverseIntakeFlywheelMotorSpeed = -0.3 * 6784; //TODO: figure out correct speed
