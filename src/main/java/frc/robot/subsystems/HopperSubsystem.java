@@ -97,8 +97,8 @@ public class HopperSubsystem extends SubsystemBase {
                 // feedback
                 run(
                         () -> {
-                            m_rightFlywheelClosedLoopController.setSetpoint(ShuffleValues.flywheel_speed, ControlType.kVelocity);
-                            m_leftFlywheelClosedLoopController.setSetpoint(ShuffleValues.flywheel_speed, ControlType.kVelocity);
+                            m_rightFlywheelClosedLoopController.setSetpoint(flywheelSpeed, ControlType.kVelocity);
+                            m_leftFlywheelClosedLoopController.setSetpoint(flywheelSpeed, ControlType.kVelocity);
                         }),
 
                 // Wait until the shooter has reached the setpoint, and then run the feeder

@@ -95,8 +95,6 @@ public class RobotContainer {
         HopperConstants.kReverseIntakeFeederMotorSpeed, 0.0));
     new EventTrigger("Auto Aim").whileTrue(new AutoAimCommand(m_robotDrive));
 
-    NamedCommands.registerCommand(null, getAutonomousCommand());
-
     // Configure the trigger bindings
     configureBindings();
     m_robotDrive.setDefaultCommand(new RunCommand(
@@ -224,6 +222,8 @@ public class RobotContainer {
     m_shuffle.refreshValue(m_robotDrive.m_frontRight.getState().angle.getRadians(),
         m_robotDrive.m_frontRight.getPosition().angle.getRadians());
     m_field.setRobotPose(m_robotDrive.getPose());
+    SmartDashboard.putNumber("Gyro Yaw (raw)", m_robotDrive.getHeading());
+    SmartDashboard.putNumber("Pose Heading (deg)", m_robotDrive.getPose().getRotation().getDegrees());
   }
 
   public void printLimeLight() {
